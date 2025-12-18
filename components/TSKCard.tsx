@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Globe, Briefcase, CheckCircle, XCircle, SquareArrowOutUpRight, Heart } from 'lucide-react';
+import { MapPin, Phone, Globe, Briefcase, CheckCircle, XCircle, ExternalLink, Heart } from 'lucide-react';
 import { TSKData } from '../types';
 import { toggleLikeTSK } from '../services/tskService';
 
@@ -203,7 +203,7 @@ export const TSKCard: React.FC<TSKCardProps> = ({ item, index, initialLiked }) =
             className="w-full h-full flex items-center justify-center gap-2 bg-white text-slate-800 font-bold py-3 rounded-[10px] text-sm transition-all duration-200 hover:bg-slate-50"
           >
             <span>Cari tahu TSK ini</span>
-            <SquareArrowOutUpRight className="w-4 h-4 text-primary-600 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            <ExternalLink className="w-4 h-4 text-primary-600 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </button>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, MapPin, Filter, X, ChevronLeft, ChevronRight, Info, SquareArrowOutUpRight } from 'lucide-react';
+import { Search, MapPin, Filter, X, ChevronLeft, ChevronRight, Info, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchTSK, fetchUserLikedIds } from './services/tskService';
 import { TSKData, SearchFilters, SearchMode } from './types';
@@ -102,7 +102,7 @@ function App() {
               className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium text-sm transition-colors mb-10 group"
             >
               Dibuat oleh Philia Space Community
-              <SquareArrowOutUpRight className="w-3 h-3 ml-1.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              <ExternalLink className="w-3 h-3 ml-1.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </a>
           </motion.div>
 
