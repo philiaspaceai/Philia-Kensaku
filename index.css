@@ -1,0 +1,5 @@
+/* 
+   Kami menggunakan Tailwind CDN di index.html untuk memastikan tampilan stabil.
+   File ini dikosongkan agar tidak ada konflik double-loading CSS.
+   Style global sudah ditangani di dalam tag <style> di index.html.
+*/
