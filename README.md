@@ -1,4 +1,3 @@
-
 # Philia Kensaku 🌸
 > **Final Update: 26 Desember 2025**
 
@@ -48,7 +47,7 @@ Proyek ini dilisensikan di bawah **Creative Commons Attribution-NonCommercial-Sh
 2.  **Non-Komersial (NC)**: Anda **TIDAK BOLEH** menggunakan materi/data ini untuk tujuan komersial (Jual beli data, layanan berbayar, dll).
 3.  **Berbagi Serupa (SA)**: Jika Anda mengubah atau membuat turunan dari materi ini, Anda harus menyebarluaskannya di bawah lisensi yang sama (Gratis & Terbuka).
 
-📄 *Lihat file [LICENSE](./LICENSE) untuk teks hukum lengkap.*
+📄 *Lihat file [LICENSE.txt](./LICENSE.txt) untuk teks hukum lengkap.*
 
 ---
 
