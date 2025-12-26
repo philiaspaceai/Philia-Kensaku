@@ -196,7 +196,7 @@ function App() {
                 <div className="relative group">
                   <input
                     type="text"
-                    placeholder="Nama perusahaan, No. Registrasi..."
+                    placeholder=""
                     value={filters.query}
                     onChange={(e) => setFilters({ ...filters, query: e.target.value })}
                     onKeyDown={(e) => e.key === 'Enter' && handleSearch(true)}
