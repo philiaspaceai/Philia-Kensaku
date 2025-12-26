@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Search, ShieldCheck, Mail, ArrowLeft, Menu, X, Lightbulb, AlertTriangle, CheckCircle, ExternalLink, MapPin, MousePointerClick, Target, Map, Bot, Users, Copy, Check } from 'lucide-react';
+import { BookOpen, Search, ShieldCheck, Mail, ArrowLeft, Menu, X, Lightbulb, AlertTriangle, CheckCircle, ExternalLink, MapPin, MousePointerClick, Target, Map, Bot, Users, Copy, Check, MessageSquare, Smartphone, FileText, Clock } from 'lucide-react';
 
 interface GuidebookProps {
   onBack: () => void;
@@ -47,10 +47,10 @@ export const Guidebook: React.FC<GuidebookProps> = ({ onBack }) => {
 
   const chapters = [
     { id: 'intro', title: 'Kenalan Dulu', icon: BookOpen },
-    { id: 'strategy', title: 'Cara Mencari TSK', icon: Search },
+    { id: 'strategy', title: 'Strategi Mencari', icon: Search },
     { id: 'validation', title: 'Detektif TSK', icon: ShieldCheck },
     { id: 'apply', title: 'Cara Melamar', icon: Mail },
-    { id: 'tips', title: 'Strategi Rahasia', icon: Lightbulb },
+    { id: 'tips', title: 'Tips & Trik', icon: Lightbulb },
   ];
 
   const scrollToChapter = (id: string) => {
@@ -400,11 +400,11 @@ export const Guidebook: React.FC<GuidebookProps> = ({ onBack }) => {
                 </div>
             </section>
 
-            {/* BAB 5: TRIK RAHASIA */}
+            {/* BAB 5: TIPS & TRIK */}
             <section id="tips" className="scroll-mt-24">
                 <div className="mb-8">
                     <span className="text-primary-600 font-bold tracking-wide uppercase text-sm">Bab 5</span>
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2 mb-4">TRIK RAHASIA</h2>
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2 mb-4">Tips & Trik</h2>
                     <p className="text-lg text-slate-600 leading-relaxed">
                         Ini adalah taktik khusus untuk mencari TSK agar emailmu lebih cepat dibalas dan lebih cepat diproses hingga memasuki tahap mendan dan mensetsu. Gunakan AI eksternal (ChatGPT/Gemini) dan teknik "Stalking" untuk memenangkan persaingan.
                     </p>
@@ -485,36 +485,127 @@ Berikan data statistik terbaru.`}
                             <div>
                                 <h3 className="text-2xl font-bold text-slate-900">3. Investigasi Mendalam</h3>
                                 <p className="text-slate-600 mt-2">
-                                    Lakukan investigasi manual untuk melihat "wajah asli" perusahaan yang tidak ditampilkan di website resmi. Gunakan cara legal dan etis untuk mendapatkan informasi. Ibaratnya seperti kamu yang mencari informasi dari pacar kamu untuk menemukan selingkuhannya dan bukti-buktinya.
+                                    Ini adalah taktik khusus untuk mencari TSK agar emailmu lebih cepat dibalas dan lebih cepat diproses hingga memasuki tahap mendan dan mensetsu. Gunakan AI eksternal (ChatGPT/Gemini) dan teknik "Stalking" untuk memenangkan persaingan.
                                 </p>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                            <div className="bg-slate-50 p-5 rounded-xl border border-slate-100">
-                                <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2">
-                                    <Target className="w-4 h-4 text-emerald-500" /> The "Tagged" Reality
-                                </h4>
-                                <p className="text-sm text-slate-600">
-                                    Buka Instagram TSK. Jangan lihat feed resmi. Klik tab <strong>"Tagged Photos"</strong> (Foto yang ditandai). Di situ wajah asli karyawan, kondisi asrama, dan pesta kantor terlihat jujur tanpa filter marketing.
+                        <div className="bg-emerald-50 border border-emerald-100 p-6 rounded-2xl mt-6">
+                            <h4 className="font-bold text-emerald-900 mb-4 flex items-center gap-2">
+                                <Target className="w-5 h-5" /> Mencari "Celah Akses" (Informasi Kontak yang Luput dari AI)
+                            </h4>
+                            <div className="space-y-6 text-slate-700 leading-relaxed">
+                                <p>
+                                    AI hebat dalam mengolah data teks, tapi Anda butuh <strong>effort manual</strong> untuk menemukan pintu masuk rahasia yang tidak terindeks dengan benar oleh mesin pencari:
+                                </p>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div className="bg-white p-4 rounded-xl border border-emerald-100 shadow-sm">
+                                        <div className="bg-emerald-100 w-8 h-8 rounded-lg flex items-center justify-center mb-3">
+                                            <MousePointerClick className="w-4 h-4 text-emerald-600" />
+                                        </div>
+                                        <h5 className="font-bold text-slate-800 text-sm mb-2">Jalur "Inquiry" Spesifik</h5>
+                                        <p className="text-xs text-slate-600 leading-relaxed">
+                                            Stalking website TSK sampai ketemu halaman <strong>"Contact Us"</strong> atau <strong>"採用 (Rekrutmen)"</strong>. Seringkali formulir di website direspon lebih cepat daripada email umum karena masuk langsung ke dashboard HR mereka.
+                                        </p>
+                                    </div>
+
+                                    <div className="bg-white p-4 rounded-xl border border-emerald-100 shadow-sm">
+                                        <div className="bg-emerald-100 w-8 h-8 rounded-lg flex items-center justify-center mb-3">
+                                            <MessageSquare className="w-4 h-4 text-emerald-600" />
+                                        </div>
+                                        <h5 className="font-bold text-slate-800 text-sm mb-2">Sosial Media DM</h5>
+                                        <p className="text-xs text-slate-600 leading-relaxed">
+                                            Cari akun Facebook/Instagram resmi perusahaan. Klik tombol kirim pesan (DM). Jika mereka aktif memposting foto kegiatan, kemungkinan besar admin sosmed-nya adalah staf HR yang bisa memberikan informasi rekrutmen secara instan.
+                                        </p>
+                                    </div>
+
+                                    <div className="bg-white p-4 rounded-xl border border-emerald-100 shadow-sm">
+                                        <div className="bg-emerald-100 w-8 h-8 rounded-lg flex items-center justify-center mb-3">
+                                            <Smartphone className="w-4 h-4 text-emerald-600" />
+                                        </div>
+                                        <h5 className="font-bold text-slate-800 text-sm mb-2">Kontak Visual (Google Maps)</h5>
+                                        <p className="text-xs text-slate-600 leading-relaxed">
+                                            Buka foto Google Maps kantor mereka. Zoom ke arah <strong>Papan Nama</strong> atau <strong>Banner</strong> di depan gedung. Kadang ada QR Code LINE atau nomor WhatsApp yang hanya dipajang secara fisik dan tidak tercantum di website.
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div className="bg-white/50 p-4 rounded-xl border border-emerald-200 flex items-center gap-3">
+                                    <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
+                                    <p className="text-xs font-medium text-emerald-800">
+                                        <strong>Tips:</strong> Menghubungi lewat jalur-jalur "sepi" ini akan membuat Anda tidak perlu mengantre dengan ratusan pelamar lainnya di inbox email utama.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Strategy 4: Reverse Engineering & Rahasia CoE */}
+                    <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+                        <div className="flex items-start gap-4 mb-6">
+                            <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center shrink-0">
+                                <FileText className="w-6 h-6 text-violet-600" />
+                            </div>
+                            <div>
+                                <h3 className="text-2xl font-bold text-slate-900">4. "Reverse Engineering" & Rahasia CoE</h3>
+                                <p className="text-slate-600 mt-2">
+                                    Jangan hanya menunggu lowongan dari TSK. Cari tahu siapa <strong>Employer (Pemberi Kerja)</strong> sebenarnya. Seringkali, perusahaan besar (seperti pabrik atau panti lansia) bekerja sama dengan TSK tertentu untuk mencari orang.
                                 </p>
                             </div>
+                        </div>
 
-                            <div className="bg-slate-50 p-5 rounded-xl border border-slate-100">
-                                <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2">
-                                    <Search className="w-4 h-4 text-blue-500" /> Social Mining
-                                </h4>
-                                <p className="text-sm text-slate-600">
-                                    Cari di Facebook/LinkedIn: <code>Nama TSK + "Indonesia"</code>. Jika ketemu akun orang Indonesia, DM dengan sopan: <em>"Kak, saya lihat kakak kerja di TSK X, boleh tanya suasananya?"</em> Ini validasi terbaik.
+                        <div className="bg-violet-50 border border-violet-100 p-6 rounded-2xl">
+                             <h4 className="font-bold text-violet-900 mb-3">💡 Rahasia Certificate of Eligibility (CoE)</h4>
+                             <p className="text-sm text-slate-700 leading-relaxed mb-4">
+                                <strong>Fun Fact:</strong> Anda bisa mendapatkan data kontak emas dari CoE milik rekan yang sudah berangkat. Di dokumen CoE, pada kolom <strong>"Place of Employment"</strong> atau <strong>"Organization"</strong>, tertera nama perusahaan asli tempat mereka bekerja.
+                             </p>
+                             <ul className="space-y-3 text-sm text-slate-700">
+                                <li className="flex gap-2">
+                                    <CheckCircle className="w-4 h-4 text-violet-500 shrink-0 mt-0.5" />
+                                    <span>Catat nama perusahaan dan alamat dari CoE tersebut.</span>
+                                </li>
+                                <li className="flex gap-2">
+                                    <CheckCircle className="w-4 h-4 text-violet-500 shrink-0 mt-0.5" />
+                                    <span>Gunakan Philia Kensaku untuk mencari TSK penanggung jawabnya.</span>
+                                </li>
+                                <li className="flex gap-2">
+                                    <CheckCircle className="w-4 h-4 text-violet-500 shrink-0 mt-0.5" />
+                                    <span>Hubungi perusahaan tersebut secara langsung untuk menanyakan apakah mereka sedang membuka kuota baru lewat TSK mereka. Jalur ini 100% valid karena perusahaan tersebut sudah terbukti mempekerjakan orang Indonesia!</span>
+                                </li>
+                             </ul>
+                        </div>
+                    </div>
+
+                    {/* Strategy 5: The Golden Hour (Optimasi Waktu) */}
+                    <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+                        <div className="flex items-start gap-4 mb-6">
+                            <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center shrink-0">
+                                <Clock className="w-6 h-6 text-amber-600" />
+                            </div>
+                            <div>
+                                <h3 className="text-2xl font-bold text-slate-900">5. "The Golden Hour" (Optimasi Waktu)</h3>
+                                <p className="text-slate-600 mt-2">
+                                    Lamaran yang hebat tidak akan berguna jika terkubur di bawah ratusan email spam. Kirimkan email lamaran Anda di saat yang paling tepat bagi HR Jepang.
                                 </p>
                             </div>
+                        </div>
 
-                            <div className="bg-slate-50 p-5 rounded-xl border border-slate-100">
-                                <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2">
-                                    <MapPin className="w-4 h-4 text-orange-500" /> Google Maps Truth
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="bg-amber-50 border border-amber-100 p-4 rounded-xl">
+                                <h4 className="font-bold text-amber-900 text-sm mb-2 flex items-center gap-2">
+                                    ⏰ Waktu Emas (JST)
                                 </h4>
-                                <p className="text-sm text-slate-600">
-                                    Buka review Google Maps kantor mereka. Urutkan <strong>"Newest"</strong>. Kadang ada ex-karyawan yang curhat jujur (bintang 1) yang tidak akan pernah muncul di website karir mereka.
+                                <p className="text-xs text-slate-700 leading-relaxed">
+                                    <strong>Hari:</strong> Selasa atau Rabu.<br/>
+                                    <strong>Jam:</strong> 09:30 – 10:30 (Waktu Jepang).<br/>
+                                    <strong>Kenapa?</strong> Di jam ini HR baru saja selesai kopi pagi dan mulai membuka inbox. Lamaran Anda akan muncul di baris paling atas!
+                                </p>
+                            </div>
+                            <div className="bg-slate-900 p-4 rounded-xl border border-slate-700">
+                                <h4 className="font-bold text-white text-sm mb-2">🚀 Pro Tip: Schedule Send</h4>
+                                <p className="text-xs text-slate-400 leading-relaxed">
+                                    Gunakan fitur <strong>"Schedule Send"</strong> (Kirim terjadwal) di Gmail. Siapkan email di malam hari, lalu atur agar terkirim otomatis di jam emas Jepang keesokan paginya.
                                 </p>
                             </div>
                         </div>
