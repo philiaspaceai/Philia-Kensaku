@@ -400,27 +400,27 @@ export const Guidebook: React.FC<GuidebookProps> = ({ onBack }) => {
                 </div>
             </section>
 
-            {/* BAB 5: STRATEGI RAHASIA (OSINT PLAYBOOK) */}
+            {/* BAB 5: TRIK RAHASIA */}
             <section id="tips" className="scroll-mt-24">
                 <div className="mb-8">
                     <span className="text-primary-600 font-bold tracking-wide uppercase text-sm">Bab 5</span>
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2 mb-4">The OSINT Playbook</h2>
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2 mb-4">TRIK RAHASIA</h2>
                     <p className="text-lg text-slate-600 leading-relaxed">
-                        Ini adalah taktik intelijen tingkat lanjut. Gunakan AI eksternal (ChatGPT/Gemini) dan teknik OSINT untuk memenangkan persaingan.
+                        Ini adalah taktik khusus untuk mencari TSK agar emailmu lebih cepat dibalas dan lebih cepat diproses hingga memasuki tahap mendan dan mensetsu. Gunakan AI eksternal (ChatGPT/Gemini) dan teknik "Stalking" untuk memenangkan persaingan.
                     </p>
                 </div>
 
                 <div className="space-y-12">
-                    {/* Strategy 1: Analisa Skala */}
+                    {/* Strategy 1: Pilih Perusahaan TSK Berskala Kecil */}
                     <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
                         <div className="flex items-start gap-4 mb-6">
                             <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center shrink-0">
                                 <Bot className="w-6 h-6 text-indigo-600" />
                             </div>
                             <div>
-                                <h3 className="text-2xl font-bold text-slate-900">1. Analisa Skala (Mencari "Kolam Kecil")</h3>
+                                <h3 className="text-2xl font-bold text-slate-900">1. Pilih Perusahaan TSK Berskala Kecil</h3>
                                 <p className="text-slate-600 mt-2">
-                                    Aplikasi ini memberikan datanya, tapi Anda butuh AI untuk menganalisanya. TSK raksasa persaingannya ribuan orang. TSK kecil/menengah seringkali kekurangan pelamar dan prosesnya lebih cepat.
+                                    Philia Kensaku ini memberikan datanya, tapi Anda butuh AI untuk menganalisanya. TSK raksasa persaingannya ribuan orang. TSK kecil/menengah seringkali kekurangan pelamar dan prosesnya lebih cepat.
                                 </p>
                             </div>
                         </div>
@@ -449,14 +449,14 @@ Sertakan URL sumber untuk setiap temuan. Lalu simpulkan apakah perusahaan TSK it
                         />
                     </div>
 
-                    {/* Strategy 2: Crisis Map */}
+                    {/* Strategy 2: Pilih Prefektur yang Krisis Tenaga Kerja */}
                     <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
                         <div className="flex items-start gap-4 mb-6">
                             <div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center shrink-0">
                                 <Map className="w-6 h-6 text-rose-600" />
                             </div>
                             <div>
-                                <h3 className="text-2xl font-bold text-slate-900">2. The "Crisis Map" (Riset Wilayah)</h3>
+                                <h3 className="text-2xl font-bold text-slate-900">2. Pilih Prefektur yang Krisis Tenaga Kerja</h3>
                                 <p className="text-slate-600 mt-2">
                                     Jangan asal pilih "Tokyo" atau "Osaka". Gunakan AI untuk menemukan daerah yang <em>putus asa</em> membutuhkan tenaga kerja di bidang Anda. Di situlah peluang lolos tertinggi.
                                 </p>
@@ -476,16 +476,16 @@ Berikan data statistik terbaru.`}
                         />
                     </div>
 
-                    {/* Strategy 3: OSINT */}
+                    {/* Strategy 3: Investigasi Mendalam */}
                     <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
                         <div className="flex items-start gap-4 mb-6">
                             <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center shrink-0">
                                 <Users className="w-6 h-6 text-emerald-600" />
                             </div>
                             <div>
-                                <h3 className="text-2xl font-bold text-slate-900">3. OSINT & Jalur Belakang</h3>
+                                <h3 className="text-2xl font-bold text-slate-900">3. Investigasi Mendalam</h3>
                                 <p className="text-slate-600 mt-2">
-                                    Teknik Intelijen Sumber Terbuka (Open Source Intelligence) untuk melihat wajah asli perusahaan yang tidak ditampilkan di website resmi. Gunakan cara legal dan etis untuk mendapatkan informasi.
+                                    Lakukan investigasi manual untuk melihat "wajah asli" perusahaan yang tidak ditampilkan di website resmi. Gunakan cara legal dan etis untuk mendapatkan informasi. Ibaratnya seperti kamu yang mencari informasi dari pacar kamu untuk menemukan selingkuhannya dan bukti-buktinya.
                                 </p>
                             </div>
                         </div>
