@@ -9,10 +9,16 @@ import { LoadingSpinner } from './components/ui/LoadingSpinner';
 import { AdvancedFilter } from './components/AdvancedFilter';
 import { Guidebook } from './components/Guidebook';
 import { Information } from './components/Information';
+import { LocationModal } from './components/modals/LocationModal';
+import { LanguageModal } from './components/modals/LanguageModal';
 
 function App() {
   // View State: 'search' | 'guidebook' | 'info'
   const [view, setView] = useState<'search' | 'guidebook' | 'info'>('search');
+
+  // Modal States (Lifted from AdvancedFilter to fix Z-Index/Stacking Context)
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
 
   // Search State
   const [mode, setMode] = useState<SearchMode>('simple');
@@ -75,6 +81,15 @@ function App() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
+
+  // Modal Handlers
+  const handleLocationSave = (newPrefectures: string[]) => {
+    setFilters({ ...filters, prefectures: newPrefectures });
+  };
+
+  const handleLanguageSave = (included: string[], excluded: string[]) => {
+    setFilters({ ...filters, languages: included, excludedLanguages: excluded });
+  };
 
   const totalPages = Math.ceil(totalCount / 20);
   const activeFilterCount = 
@@ -158,7 +173,7 @@ function App() {
                         mode === 'simple' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'
                         }`}
                     >
-                        Pencarian Cepat
+                        Cari
                     </button>
                     <button
                         onClick={() => setMode('advanced')}
@@ -166,7 +181,7 @@ function App() {
                         mode === 'advanced' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'
                         }`}
                     >
-                        Pencarian Advance
+                        Filter
                         {activeFilterCount > 0 && (
                             <span className="ml-1 bg-primary-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[1.2rem] text-center">
                                 {activeFilterCount}
@@ -181,7 +196,7 @@ function App() {
                 <div className="relative group">
                   <input
                     type="text"
-                    placeholder=""
+                    placeholder="Nama perusahaan, No. Registrasi..."
                     value={filters.query}
                     onChange={(e) => setFilters({ ...filters, query: e.target.value })}
                     onKeyDown={(e) => e.key === 'Enter' && handleSearch(true)}
@@ -196,11 +211,24 @@ function App() {
                   </button>
                 </div>
               ) : (
-                <AdvancedFilter 
-                  filters={filters} 
-                  onChange={setFilters} 
-                  onSearch={() => handleSearch(true)} 
-                />
+                <div className="space-y-6">
+                    <AdvancedFilter 
+                      filters={filters} 
+                      onChange={setFilters}
+                      onLocationOpen={() => setIsLocationModalOpen(true)}
+                      onLanguageOpen={() => setIsLanguageModalOpen(true)}
+                    />
+                    
+                    {/* External Search Button for Filter Mode */}
+                    <div className="pt-2 flex justify-end">
+                      <button
+                        onClick={() => handleSearch(true)}
+                        className="animate-gradient-xy bg-gradient-to-r from-primary-600 via-sakura-500 to-primary-600 text-white px-8 py-3 rounded-xl font-bold text-lg shadow-xl shadow-slate-200 transform transition hover:-translate-y-1 active:translate-y-0 w-full sm:w-auto"
+                      >
+                        Terapkan Filter
+                      </button>
+                   </div>
+                </div>
               )}
             </div>
           </motion.div>
@@ -318,6 +346,22 @@ function App() {
              </motion.div>
           )}
        </AnimatePresence>
+       
+       {/* Modals placed OUTSIDE the motion.div to prevent stacking context issues with fixed positioning */}
+       <LocationModal 
+            isOpen={isLocationModalOpen}
+            onClose={() => setIsLocationModalOpen(false)}
+            selectedPrefectures={filters.prefectures}
+            onSave={handleLocationSave}
+        />
+
+        <LanguageModal
+            isOpen={isLanguageModalOpen}
+            onClose={() => setIsLanguageModalOpen(false)}
+            selectedLanguages={filters.languages}
+            excludedLanguages={filters.excludedLanguages}
+            onSave={handleLanguageSave}
+        />
     </div>
   );
 }

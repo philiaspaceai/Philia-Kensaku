@@ -148,13 +148,14 @@ export const Information: React.FC<InformationProps> = ({ onBack }) => {
             </motion.div>
         </div>
 
-        {/* BLOCK C: LICENSE */}
+        {/* BLOCK C: LICENSE - REFACTORED LAYOUT */}
         <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             className="bg-slate-900 text-white p-6 sm:p-8 rounded-2xl shadow-xl relative overflow-hidden"
         >
+            {/* Background decoration */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
 
             <div className="relative z-10">
@@ -163,34 +164,61 @@ export const Information: React.FC<InformationProps> = ({ onBack }) => {
                     <h3 className="text-xl font-bold">Lisensi & Hak Cipta</h3>
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-8 items-start">
-                    <div className="flex-1">
-                        <p className="text-slate-300 mb-4 leading-relaxed">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                    
+                    {/* LEFT COLUMN: Text Content (Wide) */}
+                    <div className="lg:col-span-2 space-y-6">
+                         <p className="text-slate-300 leading-relaxed text-base">
                             Philia Kensaku dibuat untuk publik dengan prinsip <strong>Non-Profit</strong>. Kode sumber dan data olahan dilisensikan di bawah:
-                        </p>
-                        <div className="inline-block bg-white/10 border border-white/20 px-4 py-2 rounded-lg font-mono text-sm font-bold text-primary-300 mb-4">
-                            CC BY-NC-SA 4.0
-                        </div>
-                        <p className="text-xs text-slate-400">
-                            Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
-                        </p>
+                         </p>
+                         
+                         <div className="inline-flex items-center gap-3 bg-white/10 border border-white/20 px-5 py-3 rounded-xl backdrop-blur-sm">
+                            <span className="font-mono text-lg font-bold text-primary-300">CC BY-NC-SA 4.0</span>
+                         </div>
+
+                         <p className="text-sm text-slate-400 leading-relaxed">
+                            Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International.<br/>
+                            Anda bebas menggunakan, mengubah, dan membagikan ulang selama mencantumkan kredit dan <strong>tidak untuk tujuan komersial</strong>.
+                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full md:w-auto">
-                        <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                            <UserCheck className="w-5 h-5 text-green-400 mb-2" />
-                            <p className="text-xs font-bold text-white mb-1">BY (Atribusi)</p>
-                            <p className="text-[10px] text-slate-400">Wajib mencantumkan kredit ke Philia Kensaku.</p>
+                    {/* RIGHT COLUMN: Conditions List 
+                        - Mobile: Stacked Vertical
+                        - Tablet (sm): Horizontal Row of 3
+                        - Desktop (lg): Stacked Vertical (Sidebar style)
+                    */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-3 w-full">
+                        {/* BY */}
+                        <div className="bg-white/5 p-3 rounded-xl border border-white/10 flex items-center gap-4 hover:bg-white/10 transition-colors">
+                            <div className="bg-green-500/20 p-2.5 rounded-lg shrink-0">
+                                <UserCheck className="w-5 h-5 text-green-400" />
+                            </div>
+                            <div>
+                                <p className="text-xs font-bold text-white mb-0.5">BY (Atribusi)</p>
+                                <p className="text-[10px] text-slate-400 leading-tight">Wajib mencantumkan kredit ke Philia Kensaku.</p>
+                            </div>
                         </div>
-                        <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                            <Copyright className="w-5 h-5 text-yellow-400 mb-2" />
-                            <p className="text-xs font-bold text-white mb-1">NC (Non-Komersial)</p>
-                            <p className="text-[10px] text-slate-400">Dilarang menjual data ini untuk keuntungan.</p>
+
+                        {/* NC */}
+                        <div className="bg-white/5 p-3 rounded-xl border border-white/10 flex items-center gap-4 hover:bg-white/10 transition-colors">
+                            <div className="bg-yellow-500/20 p-2.5 rounded-lg shrink-0">
+                                <Copyright className="w-5 h-5 text-yellow-400" />
+                            </div>
+                            <div>
+                                <p className="text-xs font-bold text-white mb-0.5">NC (Non-Komersial)</p>
+                                <p className="text-[10px] text-slate-400 leading-tight">Dilarang menjual data ini untuk keuntungan.</p>
+                            </div>
                         </div>
-                        <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                            <Heart className="w-5 h-5 text-pink-400 mb-2" />
-                            <p className="text-xs font-bold text-white mb-1">SA (Berbagi Serupa)</p>
-                            <p className="text-[10px] text-slate-400">Karya turunan harus gratis juga.</p>
+
+                        {/* SA */}
+                        <div className="bg-white/5 p-3 rounded-xl border border-white/10 flex items-center gap-4 hover:bg-white/10 transition-colors">
+                            <div className="bg-pink-500/20 p-2.5 rounded-lg shrink-0">
+                                <Heart className="w-5 h-5 text-pink-400" />
+                            </div>
+                            <div>
+                                <p className="text-xs font-bold text-white mb-0.5">SA (Berbagi Serupa)</p>
+                                <p className="text-[10px] text-slate-400 leading-tight">Karya turunan harus gratis juga.</p>
+                            </div>
                         </div>
                     </div>
                 </div>

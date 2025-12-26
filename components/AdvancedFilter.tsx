@@ -1,35 +1,27 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { SearchFilters } from '../types';
-import { motion } from 'framer-motion';
 import { Check, Shield, ShieldCheck, MapPin, Languages, Lock, Calendar, History } from 'lucide-react';
-import { LocationModal } from './modals/LocationModal';
-import { LanguageModal } from './modals/LanguageModal';
 
 interface AdvancedFilterProps {
   filters: SearchFilters;
   onChange: (filters: SearchFilters) => void;
-  onSearch: () => void;
+  onLocationOpen: () => void;
+  onLanguageOpen: () => void;
 }
 
-export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ filters, onChange, onSearch }) => {
-  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
-  const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
-
+export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ 
+  filters, 
+  onChange, 
+  onLocationOpen, 
+  onLanguageOpen 
+}) => {
   // Legal is locked true, no toggle function provided to UI
   const toggleOptional = () => onChange({ ...filters, supportOptional: !filters.supportOptional });
 
   // Date Sort Handlers
   const setSortNewest = () => onChange({ ...filters, dateSort: filters.dateSort === 'newest' ? null : 'newest' });
   const setSortOldest = () => onChange({ ...filters, dateSort: filters.dateSort === 'oldest' ? null : 'oldest' });
-
-  const handleLocationSave = (newPrefectures: string[]) => {
-      onChange({ ...filters, prefectures: newPrefectures });
-  };
-
-  const handleLanguageSave = (included: string[], excluded: string[]) => {
-      onChange({ ...filters, languages: included, excludedLanguages: excluded });
-  };
 
   // Helper to summarize language selection
   const getLanguageSummary = () => {
@@ -56,7 +48,7 @@ export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ filters, onChang
             
             {/* BUTTON LOKASI */}
             <button
-                onClick={() => setIsLocationModalOpen(true)}
+                onClick={onLocationOpen}
                 className={`
                     w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300
                     ${filters.prefectures.length > 0 
@@ -98,7 +90,7 @@ export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ filters, onChang
 
             {/* BUTTON BAHASA */}
             <button
-                onClick={() => setIsLanguageModalOpen(true)}
+                onClick={onLanguageOpen}
                 className={`
                     w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300
                     ${(filters.languages.length > 0 || (filters.excludedLanguages?.length || 0) > 0)
@@ -135,21 +127,6 @@ export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ filters, onChang
                 </div>
             </button>
         </div>
-
-        <LocationModal 
-            isOpen={isLocationModalOpen}
-            onClose={() => setIsLocationModalOpen(false)}
-            selectedPrefectures={filters.prefectures}
-            onSave={handleLocationSave}
-        />
-
-        <LanguageModal
-            isOpen={isLanguageModalOpen}
-            onClose={() => setIsLanguageModalOpen(false)}
-            selectedLanguages={filters.languages}
-            excludedLanguages={filters.excludedLanguages}
-            onSave={handleLanguageSave}
-        />
       </section>
 
       {/* 2. Filter Urutan Tanggal */}
@@ -248,15 +225,6 @@ export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ filters, onChang
           </button>
         </div>
       </section>
-
-       <div className="pt-4 flex justify-end">
-          <button
-            onClick={onSearch}
-            className="animate-gradient-xy bg-gradient-to-r from-primary-600 via-sakura-500 to-primary-600 text-white px-8 py-3 rounded-xl font-bold text-lg shadow-xl shadow-slate-200 transform transition hover:-translate-y-1 active:translate-y-0 w-full sm:w-auto"
-          >
-            Cari TSK
-          </button>
-       </div>
     </div>
   );
 };

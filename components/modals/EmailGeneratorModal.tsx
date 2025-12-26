@@ -158,7 +158,7 @@ ${formData.country}国籍の${formData.nicknameKana}と申します。
             animate={{ opacity: 1 }} 
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-slate-900/60"
           />
 
           <motion.div 
