@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { SearchFilters } from '../types';
 import { motion } from 'framer-motion';
-import { Check, Shield, ShieldCheck, MapPin, Languages, Lock, CalendarArrowDown, CalendarArrowUp } from 'lucide-react';
+import { Check, Shield, ShieldCheck, MapPin, Languages, Lock, Calendar, History } from 'lucide-react';
 import { LocationModal } from './modals/LocationModal';
 import { LanguageModal } from './modals/LanguageModal';
 
@@ -168,7 +168,8 @@ export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ filters, onChang
           >
             <div className="flex items-center">
               <div className={`p-2 rounded-lg mr-3 ${filters.dateSort === 'newest' ? 'bg-primary-200 text-primary-700' : 'bg-slate-100 text-slate-400'}`}>
-                <CalendarArrowUp size={24} />
+                {/* SAFE ICON: Calendar (Universal) */}
+                <Calendar size={24} />
               </div>
               <div className="text-left">
                 <span className="block font-bold">Terbaru</span>
@@ -189,7 +190,8 @@ export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ filters, onChang
           >
             <div className="flex items-center">
                <div className={`p-2 rounded-lg mr-3 ${filters.dateSort === 'oldest' ? 'bg-primary-200 text-primary-700' : 'bg-slate-100 text-slate-400'}`}>
-                <CalendarArrowDown size={24} />
+                {/* SAFE ICON: History (Universal) */}
+                <History size={24} />
               </div>
               <div className="text-left">
                 <span className="block font-bold">Terlama</span>
