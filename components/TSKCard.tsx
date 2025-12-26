@@ -1,8 +1,10 @@
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Globe, Briefcase, CheckCircle, XCircle, ExternalLink, Heart } from 'lucide-react';
+import { MapPin, Phone, Languages, Briefcase, CheckCircle, XCircle, ExternalLink, Heart, Calendar, History, Mail } from 'lucide-react';
 import { TSKData } from '../types';
 import { toggleLikeTSK } from '../services/tskService';
+import { EmailGeneratorModal } from './modals/EmailGeneratorModal';
 
 interface TSKCardProps {
   item: TSKData;
@@ -11,18 +13,36 @@ interface TSKCardProps {
 }
 
 export const TSKCard: React.FC<TSKCardProps> = ({ item, index, initialLiked }) => {
-  const isBranch = item.office_type === 'Kantor Cabang';
+  // Update logic based on new DB values: 'Branch' vs 'Head Office'
+  const isBranch = item.office_type === 'Branch';
+  const officeTypeLabel = isBranch ? 'Kantor Cabang' : 'Kantor Pusat';
   
   // Local state for optimistic UI updates
   const [liked, setLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(item.total_likes || 0);
   const [isLikeLoading, setIsLikeLoading] = useState(false);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
   // Format count (e.g., 1200 -> 1.2k)
   const formattedLikeCount = new Intl.NumberFormat('en-US', {
     notation: "compact",
     compactDisplay: "short"
   }).format(likeCount);
+
+  // Helper to format date to Indonesian (e.g., "20 Agustus 2023")
+  const formatDate = (dateStr: string | null) => {
+    if (!dateStr) return '-';
+    try {
+      const date = new Date(dateStr);
+      return new Intl.DateTimeFormat('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      }).format(date);
+    } catch (e) {
+      return dateStr;
+    }
+  };
   
   const handleLike = async (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card click
@@ -51,9 +71,11 @@ export const TSKCard: React.FC<TSKCardProps> = ({ item, index, initialLiked }) =
     }
   };
   
-  const displayName = isBranch && item.branch_name ? item.branch_name : item.company_name;
-  const displayAddress = isBranch && item.branch_address ? item.branch_address : item.address;
-  const displayZip = isBranch && item.branch_zipcode ? item.branch_zipcode : item.zipcode;
+  // Display logic: strict check based on isBranch
+  // If isBranch is true, we trust the DB guarantee that branch fields are populated.
+  const displayName = (isBranch && item.branch_name) ? item.branch_name : item.company_name;
+  const displayAddress = (isBranch && item.branch_address) ? item.branch_address : item.address;
+  const displayZip = (isBranch && item.branch_zipcode) ? item.branch_zipcode : item.zipcode;
 
   const handleGoogleSearch = () => {
     // SUPER PROMPT LOGIC - VERSION 4.1
@@ -105,7 +127,7 @@ export const TSKCard: React.FC<TSKCardProps> = ({ item, index, initialLiked }) =
       <div className="p-5 flex-grow relative">
         <div className="flex justify-between items-start mb-3">
           <span className={`text-xs font-bold px-2 py-1 rounded-full ${isBranch ? 'bg-orange-100 text-orange-700' : 'bg-primary-100 text-primary-700'}`}>
-            {item.office_type}
+            {officeTypeLabel}
           </span>
           
           <div className="flex items-center space-x-2">
@@ -136,9 +158,31 @@ export const TSKCard: React.FC<TSKCardProps> = ({ item, index, initialLiked }) =
         </div>
         
         {isBranch && <p className="text-xs text-slate-500 mb-3">HQ: {item.company_name}</p>}
-        <div className="text-xs text-slate-400 font-mono mb-4">#{item.reg_number}</div>
+        <div className="text-xs text-slate-400 font-mono mb-2">#{item.reg_number}</div>
 
-        <div className="space-y-2 mt-4">
+        {/* Info Dates (Registration & Operation) */}
+        <div className="grid grid-cols-2 gap-3 mb-4 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+             <div className="flex flex-col">
+                 <span className="text-[10px] text-slate-400 font-bold uppercase flex items-center gap-1.5 mb-1">
+                    <Calendar className="w-3 h-3 text-primary-500" /> Tanggal Registrasi
+                 </span>
+                 <span className="text-xs font-semibold text-slate-700">
+                    {formatDate(item.reg_date)}
+                 </span>
+             </div>
+             {item.support_start_date && (
+                <div className="flex flex-col border-l border-slate-200 pl-3">
+                     <span className="text-[10px] text-slate-400 font-bold uppercase flex items-center gap-1.5 mb-1">
+                        <History className="w-3 h-3 text-sakura-500" /> Mulai Operasi
+                     </span>
+                     <span className="text-xs font-semibold text-slate-700">
+                        {formatDate(item.support_start_date)}
+                     </span>
+                 </div>
+             )}
+        </div>
+
+        <div className="space-y-2.5">
           <div className="flex items-start text-sm text-slate-600">
             <MapPin className="w-4 h-4 mr-2 mt-0.5 text-primary-500 shrink-0" />
             <span>
@@ -153,7 +197,7 @@ export const TSKCard: React.FC<TSKCardProps> = ({ item, index, initialLiked }) =
           </div>
           
           <div className="flex items-start text-sm text-slate-600">
-            <Globe className="w-4 h-4 mr-2 mt-0.5 text-primary-500 shrink-0" />
+            <Languages className="w-4 h-4 mr-2 mt-0.5 text-primary-500 shrink-0" />
             <span className="line-clamp-2" title={item.language || "N/A"}>
               {item.language ? item.language.replace(/,/g, ', ') : 'Bahasa tidak tercatat'}
             </span>
@@ -195,18 +239,33 @@ export const TSKCard: React.FC<TSKCardProps> = ({ item, index, initialLiked }) =
         </div>
       </div>
 
-      <div className="bg-slate-50 px-5 pb-5">
-        {/* Animated Gradient Outline Effect */}
+      <div className="bg-slate-50 px-5 pb-5 grid grid-cols-2 gap-3">
+        {/* Tombol Buat Email */}
+        <button 
+            onClick={() => setIsEmailModalOpen(true)}
+            className="flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 font-bold py-3 rounded-[10px] text-sm transition-all duration-200 hover:bg-slate-100 hover:border-slate-300 shadow-sm"
+        >
+            <Mail className="w-4 h-4 text-slate-500" />
+            <span>Buat Email</span>
+        </button>
+
+        {/* Tombol Cari TSK (Super Prompt) */}
         <div className="p-[2px] rounded-xl bg-gradient-to-r from-primary-600 via-sakura-500 to-primary-600 animate-gradient-xy group shadow-sm hover:shadow-md transition-shadow">
           <button 
             onClick={handleGoogleSearch}
             className="w-full h-full flex items-center justify-center gap-2 bg-white text-slate-800 font-bold py-3 rounded-[10px] text-sm transition-all duration-200 hover:bg-slate-50"
           >
-            <span>Cari tahu TSK ini</span>
+            <span>Cari tahu</span>
             <ExternalLink className="w-4 h-4 text-primary-600 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </button>
         </div>
       </div>
+
+      <EmailGeneratorModal 
+        isOpen={isEmailModalOpen} 
+        onClose={() => setIsEmailModalOpen(false)} 
+        companyName={displayName} 
+      />
     </motion.div>
   );
 };

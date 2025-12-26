@@ -1,20 +1,28 @@
+
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, MapPin, Filter, X, ChevronLeft, ChevronRight, Info, ExternalLink } from 'lucide-react';
+import { Search, MapPin, Filter, X, ChevronLeft, ChevronRight, Info, ExternalLink, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchTSK, fetchUserLikedIds } from './services/tskService';
 import { TSKData, SearchFilters, SearchMode } from './types';
 import { TSKCard } from './components/TSKCard';
 import { LoadingSpinner } from './components/ui/LoadingSpinner';
 import { AdvancedFilter } from './components/AdvancedFilter';
+import { Guidebook } from './components/Guidebook';
+import { Information } from './components/Information';
 
 function App() {
-  // State
+  // View State: 'search' | 'guidebook' | 'info'
+  const [view, setView] = useState<'search' | 'guidebook' | 'info'>('search');
+
+  // Search State
   const [mode, setMode] = useState<SearchMode>('simple');
   const [filters, setFilters] = useState<SearchFilters>({
     query: '',
     prefectures: [],
     languages: [],
-    supportLegal: false,
+    excludedLanguages: [],
+    dateSort: null, 
+    supportLegal: true, 
     supportOptional: false
   });
   
@@ -46,8 +54,8 @@ function App() {
       const userLikes = await fetchUserLikedIds(ids);
       setLikedIds(new Set(userLikes));
       
-      // Smooth scroll to results
-      if (resetPage && window.innerWidth < 768) {
+      // Smooth scroll to results only if we are in search view and on mobile
+      if (resetPage && window.innerWidth < 768 && view === 'search') {
          setTimeout(() => {
            resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
          }, 100);
@@ -69,15 +77,43 @@ function App() {
   }, [page]);
 
   const totalPages = Math.ceil(totalCount / 20);
+  const activeFilterCount = 
+    filters.prefectures.length + 
+    filters.languages.length + 
+    filters.excludedLanguages.length +
+    (filters.supportOptional ? 1 : 0) +
+    (filters.dateSort ? 1 : 0);
 
-  return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans flex flex-col">
-      
+  // Content for Search View
+  const SearchContent = (
+    <>
       {/* Hero Section */}
       <div className="bg-white border-b border-slate-200 relative overflow-hidden">
          {/* Abstract Decoration */}
          <div className="absolute top-0 right-0 w-64 h-64 bg-primary-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-60"></div>
          <div className="absolute top-0 left-0 w-64 h-64 bg-sakura-50 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2 opacity-60"></div>
+        
+         {/* Info Button (Top Left) */}
+         <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-20">
+            <button
+              onClick={() => setView('info')}
+              className="flex items-center gap-2 bg-white/80 backdrop-blur-md border border-slate-200 text-slate-700 px-3 py-2 rounded-full font-bold shadow-sm hover:bg-white hover:shadow-md hover:text-primary-600 transition-all group"
+            >
+               <Info className="w-5 h-5 text-slate-500 group-hover:text-primary-500 transition-colors" />
+               <span className="hidden sm:inline text-sm">Informasi</span>
+            </button>
+         </div>
+
+         {/* Guidebook Button (Top Right) */}
+         <div className="absolute top-4 right-4 sm:top-8 sm:right-8 z-20">
+            <button
+              onClick={() => setView('guidebook')}
+              className="flex items-center gap-2 bg-white/80 backdrop-blur-md border border-slate-200 text-slate-700 px-4 py-2 rounded-full font-bold shadow-sm hover:bg-white hover:shadow-md hover:text-primary-600 transition-all group"
+            >
+               <BookOpen className="w-5 h-5 text-primary-500 group-hover:scale-110 transition-transform" />
+               <span className="hidden sm:inline">Panduan Lengkap</span>
+            </button>
+         </div>
 
         <div className="max-w-5xl mx-auto px-4 py-12 sm:py-20 relative z-10 text-center">
           <motion.div
@@ -113,24 +149,31 @@ function App() {
              transition={{ duration: 0.6, delay: 0.2 }}
              className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 p-2 sm:p-4 max-w-3xl mx-auto"
           >
-            {/* Tabs */}
-            <div className="flex space-x-2 mb-4 p-1 bg-slate-100 rounded-xl w-fit mx-auto sm:mx-0">
-              <button
-                onClick={() => setMode('simple')}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  mode === 'simple' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                Pencarian Cepat
-              </button>
-              <button
-                onClick={() => setMode('advanced')}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  mode === 'advanced' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                Pencarian Advance
-              </button>
+            {/* Tabs - Centered & With Badge */}
+            <div className="flex justify-center items-center mb-4 px-1">
+                <div className="flex space-x-2 p-1 bg-slate-100 rounded-xl w-fit">
+                    <button
+                        onClick={() => setMode('simple')}
+                        className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                        mode === 'simple' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                        }`}
+                    >
+                        Pencarian Cepat
+                    </button>
+                    <button
+                        onClick={() => setMode('advanced')}
+                        className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${
+                        mode === 'advanced' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                        }`}
+                    >
+                        Pencarian Advance
+                        {activeFilterCount > 0 && (
+                            <span className="ml-1 bg-primary-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[1.2rem] text-center">
+                                {activeFilterCount}
+                            </span>
+                        )}
+                    </button>
+                </div>
             </div>
 
             <div className="p-2 sm:p-4">
@@ -138,7 +181,7 @@ function App() {
                 <div className="relative group">
                   <input
                     type="text"
-                    placeholder="Ketik nama perusahaan, cabang, atau nomor registrasi..."
+                    placeholder=""
                     value={filters.query}
                     onChange={(e) => setFilters({ ...filters, query: e.target.value })}
                     onKeyDown={(e) => e.key === 'Enter' && handleSearch(true)}
@@ -234,6 +277,47 @@ function App() {
       <footer className="bg-white border-t border-slate-200 py-8 text-center text-slate-400 text-sm">
         <p>&copy; {new Date().getFullYear()} Philia Kensaku. Data provided by moj.go.jp.</p>
       </footer>
+    </>
+  );
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans flex flex-col">
+       <AnimatePresence mode="wait">
+          {view === 'search' ? (
+             <motion.div
+                key="search"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col min-h-screen w-full"
+             >
+                {SearchContent}
+             </motion.div>
+          ) : view === 'guidebook' ? (
+             <motion.div
+                key="guidebook"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col min-h-screen w-full"
+             >
+                <Guidebook onBack={() => setView('search')} />
+             </motion.div>
+          ) : (
+             <motion.div
+                key="info"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col min-h-screen w-full"
+             >
+                <Information onBack={() => setView('search')} />
+             </motion.div>
+          )}
+       </AnimatePresence>
     </div>
   );
 }

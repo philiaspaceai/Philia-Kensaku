@@ -1,3 +1,4 @@
+
 export interface TSKData {
   id: number;
   office_type: string;
@@ -23,6 +24,8 @@ export interface SearchFilters {
   query: string;
   prefectures: string[];
   languages: string[];
+  excludedLanguages: string[]; // New field for exclusion
+  dateSort: 'newest' | 'oldest' | null; // New field for date sorting
   supportLegal: boolean;
   supportOptional: boolean;
 }
