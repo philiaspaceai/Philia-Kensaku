@@ -30,7 +30,7 @@ export const EmailGeneratorModal: React.FC<EmailGeneratorModalProps> = ({ isOpen
     fullName: '',
     address: 'インドネシア',
     email: '',
-    phone: '',
+    phone: '+628', // Locked Prefix Initialization
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -48,13 +48,14 @@ export const EmailGeneratorModal: React.FC<EmailGeneratorModalProps> = ({ isOpen
   // Validation Logic
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    const katakanaRegex = /^[\u30A0-\u30FF\u30FC\s]+$/; 
+    // Regex: Katakana Range + Prolonged Sound + Space + Middle Dot (Full & Half width)
+    const katakanaRegex = /^[\u30A0-\u30FF\u30FC\s\u30FB\uFF65]+$/; 
 
     if (!formData.nicknameKana || !katakanaRegex.test(formData.nicknameKana)) {
-      newErrors.nicknameKana = 'Wajib Katakana (Contoh: ヤマダ)';
+      newErrors.nicknameKana = 'Wajib Katakana (Boleh pakai titik ・)';
     }
     if (!formData.fullNameKana || !katakanaRegex.test(formData.fullNameKana)) {
-      newErrors.fullNameKana = 'Wajib Katakana';
+      newErrors.fullNameKana = 'Wajib Katakana (Boleh pakai titik ・)';
     }
     if (!formData.sswFieldId) newErrors.sswFieldId = 'Pilih bidang SSW';
     if (!formData.jlptId) newErrors.jlptId = 'Pilih sertifikat bahasa';
@@ -68,6 +69,11 @@ export const EmailGeneratorModal: React.FC<EmailGeneratorModalProps> = ({ isOpen
     }
 
     if (!formData.email) newErrors.email = 'Email wajib diisi';
+    
+    // Phone Validation: Must exceed length of "+628" (4 chars)
+    if (!formData.phone || formData.phone.length <= 4) {
+        newErrors.phone = 'Nomor HP wajib diisi';
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -76,6 +82,37 @@ export const EmailGeneratorModal: React.FC<EmailGeneratorModalProps> = ({ isOpen
   const handleGenerate = () => {
     if (validate()) {
       setStep('preview');
+    }
+  };
+  
+  // Strict Phone Handler
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val = e.target.value;
+
+    // 1. Remove Whitespace
+    val = val.replace(/\s/g, '');
+
+    // 2. Handle Paste Auto-Correction
+    // If user pastes "0812...", convert to "+62812..."
+    if (val.startsWith('08')) {
+        val = '+628' + val.substring(2);
+    } 
+    // If user pastes "628...", ensure '+' exists
+    else if (val.startsWith('628')) {
+        val = '+' + val;
+    }
+
+    // 3. Extract Only Digits
+    const digits = val.replace(/\D/g, '');
+
+    // 4. Enforce Prefix Logic
+    // The sequence of digits MUST start with '628'.
+    if (digits.startsWith('628')) {
+        // Reconstruct with '+' prefix
+        setFormData({ ...formData, phone: '+' + digits });
+    } else {
+        // If the prefix is broken (e.g. user backspaced too far), reset to base lock
+        setFormData({ ...formData, phone: '+628' });
     }
   };
 
@@ -471,17 +508,18 @@ ${formData.country}国籍の${formData.nicknameKana}と申します。
                         </div>
                         
                         <div>
-                             <label className={labelClass}>Nomor HP / WhatsApp</label>
+                             <label className={labelClass}>Nomor HP / WhatsApp <span className="text-red-500 normal-case">(Wajib +628...)</span></label>
                              <div className="relative">
                                 <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <input 
                                     type="tel" 
-                                    placeholder="+62 812..."
+                                    placeholder="+628..."
                                     value={formData.phone} 
-                                    onChange={e => setFormData({...formData, phone: e.target.value})}
-                                    className={`${inputClass(false)} pl-11`}
+                                    onChange={handlePhoneChange}
+                                    className={`${inputClass(!!errors.phone)} pl-11 font-mono tracking-wide`}
                                 />
                              </div>
+                             {errors.phone && <p className="text-red-500 text-xs mt-1 ml-1">{errors.phone}</p>}
                         </div>
                     </div>
                   </div>
