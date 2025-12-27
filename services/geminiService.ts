@@ -5,9 +5,8 @@ import { TSKData } from "../types";
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
-  // MENGGUNAKAN GEMINI 3 FLASH PREVIEW
-  // Model ini yang paling stabil mendukung fitur Google Search Grounding saat ini.
-  const model = "gemini-3-flash-preview"; 
+  // REVERT: Menggunakan model 2.5 Flash sesuai request user
+  const model = "gemini-2.5-flash"; 
 
   const prompt = `
     Analyze this Japanese Registered Support Organization (TSK).

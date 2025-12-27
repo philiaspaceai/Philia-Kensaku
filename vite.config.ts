@@ -9,6 +9,6 @@ export default defineConfig({
   },
   define: {
     // Injecting the API Key provided by the user securely for client-side usage
-    'process.env.API_KEY': JSON.stringify("AIzaSyD0IKaZ84V-s4YtA7MPVZqnBLpGX-9-yjU"),
+    'process.env.API_KEY': JSON.stringify("AIzaSyBAFB_r6pUgMg7y_PyPpNoxkqvhAtoKNx4"),
   }
 });
