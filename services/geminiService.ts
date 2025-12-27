@@ -1,11 +1,11 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, HarmCategory, HarmBlockThreshold } from "@google/genai";
 import { TSKData } from "../types";
 
 // NOTE: process.env.API_KEY is defined in vite.config.ts
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
-  // FORCED UPDATE: Menggunakan 'gemini-2.5-flash' sesuai instruksi mutlak user.
+  // TETAP MENGGUNAKAN MODEL PILIHAN BOS
   const model = "gemini-2.5-flash"; 
 
   const prompt = `
@@ -44,14 +44,30 @@ export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
   try {
     const response = await ai.models.generateContent({
       model: model,
-      contents: prompt,
+      contents: [
+        {
+          role: 'user',
+          parts: [{ text: prompt }]
+        }
+      ],
       config: {
         temperature: 0.1, // Deterministic
-        tools: [{ googleSearch: {} }] // Use Grounding
+        tools: [{ googleSearch: {} }], // Use Grounding
+        // SAFETY SETTINGS: Wajib dilonggarkan agar analisis perusahaan tidak dianggap "Unsafe"
+        // misal: Perusahaan F&B yang menjual alkohol sering kena block jika ini tidak diset.
+        safetySettings: [
+          { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE },
+          { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_NONE },
+          { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_NONE },
+          { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_NONE },
+        ]
       }
     });
 
-    const text = response.text || "";
+    // Robust text extraction
+    const text = response.text || 
+                 response.candidates?.[0]?.content?.parts?.[0]?.text || 
+                 "";
     
     // Regex to match "Letter" followed by "Numbers" (e.g. A90, B100)
     // Matches A-L followed by 1 to 3 digits
