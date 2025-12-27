@@ -62,7 +62,7 @@ export default async function handler(req: any, res: any) {
     // IMPLEMENTASI SPESIFIK SESUAI REQUEST BOS (client.responses.create)
     // Menggunakan 'as any' untuk bypass TypeScript checking pada fitur beta/custom ini
     const response = await (client as any).responses.create({
-      model: "gpt-4o-nano",
+      model: "gpt-5-nano-2025-08-07",
       tools: [{ type: "web_search" }],
       input: prompt,
     });
