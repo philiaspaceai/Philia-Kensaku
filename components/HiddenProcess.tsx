@@ -122,12 +122,7 @@ export const HiddenProcess: React.FC<HiddenProcessProps> = ({ item, onClose, onC
             </div>
         </div>
 
-        <button 
-            onClick={onComplete}
-            className="mt-6 text-xs text-slate-400 hover:text-slate-600 underline"
-        >
-            Lewati (Langsung ke Google)
-        </button>
+        {/* TOMBOL LEWATI SUDAH DIHAPUS DISINI AGAR USER MENUNGGU */}
       </motion.div>
     </div>
   );

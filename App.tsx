@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, MapPin, Filter, X, ChevronLeft, ChevronRight, Info, ExternalLink, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -157,7 +155,9 @@ function App() {
     `.trim().replace(/\s+/g, ' '); 
 
     const url = `https://www.google.com/search?q=${encodeURIComponent(promptInstructions)}&udm=50`;
-    window.open(url, '_blank');
+    
+    // CHANGED: Open in SAME TAB
+    window.location.href = url;
   };
 
   const totalPages = Math.ceil(totalCount / 20);
