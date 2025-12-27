@@ -4,25 +4,9 @@ import { TSKData } from "../types";
 // NOTE: process.env.API_KEY is defined in vite.config.ts
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-/**
- * Limitasi Model (Per 26 Des 2025):
- * Model: gemini-2.0-flash-exp
- * 
- * Free Tier:
- * - 10 RPM (Requests Per Minute)
- * - 1,500 RPD (Requests Per Day)
- * 
- * Pay-as-you-go:
- * - 1,000 RPM (Requests Per Minute) - Jauh lebih tinggi
- * 
- * Jika terjadi error di Google Cloud Metrics, kemungkinan karena:
- * 1. Model Name typo/tidak tersedia (404) -> Kita ganti ke 'gemini-2.0-flash-exp'
- * 2. Rate Limit Exceeded (429) -> Tunggu sebentar antar request.
- */
-
 export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
-  // CHANGE: Menggunakan gemini-2.0-flash-exp yang lebih stabil akses publiknya.
-  const model = "gemini-2.0-flash-exp"; 
+  // FORCED UPDATE: Menggunakan 'gemini-2.5-flash' sesuai instruksi mutlak user.
+  const model = "gemini-2.5-flash"; 
 
   const prompt = `
     Analyze this Japanese Registered Support Organization (TSK).
@@ -48,7 +32,7 @@ export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
     L: Food Service / Restaurant
 
     Instructions:
-    1. Search for their official website or job postings.
+    1. Search for their official website or job postings using the "google_search" tool.
     2. Return the codes followed immediately by the percentage number (e.g., "A90").
     3. Return ONLY the codes separated by commas.
     4. SORT the result by percentage DESCENDING (Highest first).
