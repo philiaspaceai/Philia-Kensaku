@@ -20,11 +20,13 @@ export default async function handler(req: any, res: any) {
   try {
     const { companyName, address, regNumber } = req.body;
 
-    // Gunakan Key dari Environment Variable (Prioritas) atau Fallback ke Key yang Anda berikan
-    const apiKey = process.env.OPENAI_API_KEY || "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";
+    // SECURITY UPDATE: Hanya mengambil key dari Environment Variable.
+    // Pastikan OPENAI_API_KEY sudah diset di Vercel Project Settings.
+    const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
-      return res.status(500).json({ error: 'OpenAI API Key missing' });
+      console.error("Critical: OPENAI_API_KEY environment variable is not set.");
+      return res.status(500).json({ error: 'Server configuration error: API Key missing' });
     }
 
     const client = new OpenAI({ apiKey });
@@ -62,7 +64,7 @@ export default async function handler(req: any, res: any) {
     // IMPLEMENTASI SPESIFIK SESUAI REQUEST BOS (client.responses.create)
     // Menggunakan 'as any' untuk bypass TypeScript checking pada fitur beta/custom ini
     const response = await (client as any).responses.create({
-      model: "gpt-4o-nano",
+      model: "gpt-4o-mini",
       tools: [{ type: "web_search" }],
       input: prompt,
     });
