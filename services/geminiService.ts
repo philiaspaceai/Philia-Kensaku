@@ -78,7 +78,7 @@ export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
     // STEP 2: FAILOVER KE OPENAI (BACKUP)
     // Jika Gemini error (429 Limit, 503 Overloaded, atau error lain), alihkan ke OpenAI
     console.warn("⚠️ [AI PRIMARY FAILED] Gemini bermasalah:", error.message);
-    console.log("🔄 [FAILOVER] Mengalihkan ke OpenAI (GPT-4o-Mini)...");
+    console.log("🔄 [FAILOVER] Mengalihkan ke OpenAI (GPT-4o-Nano)...");
     
     try {
         const openAiResult = await analyzeWithOpenAI(company);
