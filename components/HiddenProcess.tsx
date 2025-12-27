@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BrainCircuit, Search, Database, ArrowRight, X, ShieldCheck } from 'lucide-react';
+import { BrainCircuit, Search, Database, ShieldCheck } from 'lucide-react';
 import { TSKData } from '../types';
 import { analyzeCompanyTags } from '../services/geminiService';
 import { updateTSKTags } from '../services/tskService';
@@ -24,9 +24,9 @@ export const HiddenProcess: React.FC<HiddenProcessProps> = ({ item, onClose, onC
       try {
         // STEP 1: ANALYZE
         setStep(0);
-        setStatusText(`Dual-Engine Scan: ${item.company_name}...`);
+        setStatusText(`Deep Research: ${item.company_name}...`);
         
-        // Call Gemini (with OpenAI Fallback inside)
+        // Call Gemini Service
         const tags = await analyzeCompanyTags(item);
         
         if (!isMounted) return;
@@ -34,7 +34,7 @@ export const HiddenProcess: React.FC<HiddenProcessProps> = ({ item, onClose, onC
         // STEP 2: SAVE (Only if tags found)
         if (tags) {
             setStep(1);
-            setStatusText("Menyimpan Temuan Data...");
+            setStatusText("Menyimpan Analisis Sektor...");
             await updateTSKTags(item.id, tags);
         } else {
             setStatusText("Data spesifik tidak terdeteksi, melanjutkan...");
@@ -114,11 +114,11 @@ export const HiddenProcess: React.FC<HiddenProcessProps> = ({ item, onClose, onC
         <div className="space-y-2">
             <div className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${step >= 0 ? 'bg-indigo-50 border-indigo-100 text-indigo-700' : 'bg-slate-50 border-slate-100 text-slate-400'}`}>
                 <Search className="w-5 h-5" />
-                <span className="text-sm font-semibold">Deep Web Search (Gemini/OpenAI)</span>
+                <span className="text-sm font-semibold">Gemini 2.5/3.0 Deep Scan</span>
             </div>
             <div className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${step >= 1 ? 'bg-sakura-50 border-sakura-100 text-sakura-700' : 'bg-slate-50 border-slate-100 text-slate-400'}`}>
                 <Database className="w-5 h-5" />
-                <span className="text-sm font-semibold">Validasi & Kategori TSK</span>
+                <span className="text-sm font-semibold">Validasi & Parsing Sektor</span>
             </div>
         </div>
       </motion.div>
