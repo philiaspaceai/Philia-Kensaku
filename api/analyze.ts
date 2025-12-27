@@ -30,7 +30,6 @@ export default async function handler(req: any, res: any) {
     const client = new OpenAI({ apiKey });
 
     // PROMPT: Deep Analysis with Web Search
-    // Instruksi dipersingkat dan diperjelas untuk format output string
     const prompt = `
     Search the web deeply for this Japanese TSK (Registered Support Organization):
     Company Name: ${companyName}
@@ -60,21 +59,26 @@ export default async function handler(req: any, res: any) {
     - If no specific info found online, make an educated guess based on company name keywords and location.
     `;
 
-    // MENGGUNAKAN ENDPOINT RESPONSES SESUAI INSTRUKSI USER
-    // Cast client ke 'any' untuk bypass pengecekan TypeScript standar
+    // MENGGUNAKAN ENDPOINT RESPONSES (Experimental/New)
+    // SDK JS biasanya menggunakan camelCase (outputText) untuk property response,
+    // berbeda dengan Python yang menggunakan snake_case (output_text).
     const response = await (client as any).responses.create({
       model: "gpt-4o-mini", 
       tools: [
         { type: "web_search" }
       ],
-      input: prompt, // Menggunakan properti 'input' bukan 'messages'
-      max_tokens: 3000 // Dinaikkan sesuai request
+      input: prompt, 
+      max_tokens: 3000
     });
 
-    // Mengambil output_text sesuai snippet Python user
-    const resultText = response.output_text || "";
+    console.log("OpenAI Raw Response Keys:", Object.keys(response));
+
+    // PRIORITAS 1: CamelCase (Standar JS SDK) -> outputText
+    // PRIORITAS 2: SnakeCase (Standar Python/Raw API) -> output_text
+    // PRIORITAS 3: Stringify JSON (Untuk Debugging jika format berubah/gagal)
+    const resultText = response.outputText || response.output_text || JSON.stringify(response);
     
-    console.log("OpenAI Responses API Result:", resultText);
+    console.log("OpenAI Extracted Result:", resultText);
 
     return res.status(200).json({ result: resultText });
 
