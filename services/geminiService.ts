@@ -20,7 +20,7 @@ const SECTOR_MAP: Record<string, string> = {
 
 export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
   console.log(`[GEMINI SERVICE] Starting Client-Side Analysis for ${company.company_name}...`);
-  await logToSupabase(`[GEMINI-START] Analyzing ${company.company_name} via Google GenAI SDK`);
+  await logToSupabase(`[GEMINI-START] Analyzing ${company.company_name} using User Specified Models`);
 
   try {
     // 1. CONFIG: API KEYS (Injected via Vite define)
@@ -31,22 +31,20 @@ export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
     ].filter(Boolean) as string[];
 
     if (API_KEYS.length === 0) {
-        throw new Error("No API Keys configured. Cek Environment Variable Vercel.");
+        throw new Error("No API Keys configured. Cek Environment Variable.");
     }
 
-    // 2. MODELS CONFIGURATION
-    // Added 1.5-flash as fallback, fixed 3-flash name, kept user preferences.
+    // 2. MODELS CONFIGURATION (STRICTLY USER DEFINED)
     const MODELS = [
-        'gemini-2.5-flash', 
+        'gemini-2.5-flash',
         'gemini-2.5-flash-lite', 
-        'gemini-3-flash-preview',
-        'gemini-1.5-flash'
+        'gemini-3-flash'
     ];
 
     // 3. PROMPT ENGINEERING (STRICT)
     const prompt = `
 TUGAS:
-Lakukan analisa dan Deep research mendalam di GOOGLE dan INTERNET terhadap satu perusahaan Tokutei Ginou (TSK) berikut untuk MEMPREDIKSI bidang pekerjaan Tokutei Ginou (SSW) yang paling mungkin tersedia dilayani. Gunakan Bahasa Jepang Ketika melakukan deep research di google agar kamu tidak mengalami "Language Barrier" yang terjadi karena kamu tidak menggunakan Bahasa jepang yang mengakibatkan informasi yang kamu terima menjadi kurang akurat karena tidak menggunakan Bahasa Jepang.
+Lakukan analisa dan Deep research mendalam di GOOGLE dan INTERNET terhadap satu perusahaan Tokutei Ginou (TSK) berikut untuk MEMPREDIKSI bidang pekerjaan Tokutei Ginou (SSW) yang paling mungkin tersedia dilayani. Gunakan Bahasa Jepang Ketika melakukan deep research di google agar kamu tidak mengalami "Language Barrier".
 
 DATA PERUSAHAAN:
 Nama Perusahaan: ${company.company_name}
@@ -125,11 +123,11 @@ Persentase harus angka 0–100 tanpa desimal.
     }
 
     if (!finalRawText) {
-        await logToSupabase(`[GEMINI-FAIL] All models/keys exhausted.`);
+        await logToSupabase(`[GEMINI-FAIL] All user-defined models/keys exhausted.`);
         return "";
     }
 
-    // 5. PARSING OUTPUT (Improved Regex)
+    // 5. PARSING OUTPUT
     const parsedTags: string[] = [];
     const lines = finalRawText.split('\n');
 
@@ -158,7 +156,6 @@ Persentase harus angka 0–100 tanpa desimal.
         await logToSupabase(`[GEMINI-SUCCESS] Tags: "${resultString}" (Model: ${usedModel})`);
     } else {
         await logToSupabase(`[GEMINI-WARN] Raw text captured but parsing failed/low confidence.`);
-        // Optional: Log raw text for debugging if needed, but keeping it clean for now
     }
     
     return resultString;
