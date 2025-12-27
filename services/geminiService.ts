@@ -1,33 +1,10 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import { TSKData } from "../types";
 import { logToSupabase } from "./tskService"; 
 
-// Mapping from AI Prompt Label -> App Sector Code (A-L)
-const SECTOR_MAP: Record<string, string> = {
-  "Nursing Care": "A",
-  "Building Cleaning Management": "B",
-  "Construction Industry": "C",
-  "Manufacture of Industrial Products": "D",
-  "Electronics": "E",
-  "Automobile Repair and Maintenance": "F",
-  "Aviation Industry": "G",
-  "Accommodation Industry": "H",
-  "Agriculture": "I",
-  "Fishery and Aquaculture": "J",
-  "Manufacture of Food and Beverages": "K",
-  "Food Service Industry": "L"
-};
-
-// Interface for AI Response Structure
-interface SectorAnalysis {
-  category_name: string;
-  confidence_score: number;
-  evidence_found: string;
-}
-
 export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
-  console.log(`[GEMINI SERVICE] Starting Strict Analysis for ${company.company_name}...`);
-  await logToSupabase(`[GEMINI-START] Analyzing ${company.company_name} using JSON Schema Enforcement`);
+  console.log(`[GEMINI SERVICE] Starting Analysis for ${company.company_name} (Text Mode)...`);
+  await logToSupabase(`[GEMINI-START] Analyzing ${company.company_name} [Mode: Direct Code]`);
 
   try {
     // 1. CONFIG: API KEYS
@@ -48,64 +25,54 @@ export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
         'gemini-3-flash'
     ];
 
-    // 3. SCHEMA DEFINITION (STRICT TYPESCRIPT ENFORCEMENT)
-    const responseSchema = {
-        type: Type.ARRAY,
-        items: {
-          type: Type.OBJECT,
-          properties: {
-            category_name: {
-              type: Type.STRING,
-              description: "Kategori industri dalam Bahasa Inggris yang sesuai.",
-              enum: [
-                "Nursing Care", "Building Cleaning Management", "Construction Industry",
-                "Manufacture of Industrial Products", "Electronics", "Automobile Repair and Maintenance",
-                "Aviation Industry", "Accommodation Industry", "Agriculture", 
-                "Fishery and Aquaculture", "Manufacture of Food and Beverages", "Food Service Industry"
-              ]
-            },
-            confidence_score: {
-              type: Type.INTEGER,
-              description: "Skor keyakinan 0-100 berdasarkan bukti digital.",
-            },
-            evidence_found: {
-              type: Type.STRING,
-              description: "Bukti spesifik yang ditemukan (misal: 'Ada iklan rekrutmen staff kaigo').",
-            }
-          },
-          required: ["category_name", "confidence_score", "evidence_found"],
-        },
-    };
+    // 3. SECTOR DEFINITIONS FOR PROMPT
+    const SECTOR_LIST = `
+A: Nursing Care (Kaigo)
+B: Building Cleaning Management
+C: Construction Industry
+D: Manufacture of Industrial Products
+E: Electronics and Information
+F: Automobile Repair and Maintenance
+G: Aviation Industry
+H: Accommodation Industry (Hotel)
+I: Agriculture
+J: Fishery and Aquaculture
+K: Manufacture of Food and Beverages
+L: Food Service Industry (Restaurant)
+`;
 
-    // 4. PROMPT ENGINEERING (RUBRIC & EVIDENCE BASED)
+    // 4. PROMPT ENGINEERING (DIRECT OUTPUT)
     const prompt = `
-ROLE:
-Anda adalah Analis Intelijen Bisnis Elit untuk pasar tenaga kerja Jepang (Tokutei Ginou).
-
-TUGAS:
-Lakukan Deep Search untuk menentukan sektor industri TSK berikut. 
-Gunakan Bahasa Jepang saat mencari di Google untuk akurasi maksimal, tapi output JSON dalam Inggris sesuai Schema.
+ROLE: Business Intelligence Analyst (Japan Market).
+TASK: Determine the Tokutei Ginou (SSW) sector for this company based on Google Search results.
 
 TARGET:
-Nama: ${company.company_name}
-Registrasi: ${company.reg_number}
-Alamat: ${company.address}
-CEO: ${company.representative || "Tidak Diketahui"}
+Name: ${company.company_name}
+Reg No: ${company.reg_number}
+Address: ${company.address}
+Representative: ${company.representative || "-"}
 
-RUBRIK PENILAIAN SKOR (Confidence Score):
-- Skor 90-100: DITEMUKAN BUKTI KERAS berupa halaman rekrutmen (Recruit Page), Iklan Jobstreet/Indeed/HelloWork yang secara eksplisit mencari staff Tokutei Ginou di bidang tersebut.
-- Skor 70-89: Website resmi menyatakan dengan jelas bahwa "Bisnis Utama" mereka bergerak di bidang tersebut.
-- Skor 40-69: Ada indikasi dari foto kegiatan, blog, atau artikel berita, tapi tidak ada info rekrutmen eksplisit.
-- Skor < 40: Jangan dimasukkan ke dalam list.
+SECTOR CODES:
+${SECTOR_LIST}
 
-INSTRUKSI:
-1. Cari: "${company.company_name} 特定技能 求人" (Tokutei Ginou Recruitment).
-2. Cari: "${company.company_name} 事業内容" (Business Summary).
-3. HANYA kembalikan kategori yang memiliki confidence_score >= 50.
+INSTRUCTIONS:
+1. Search for "${company.company_name} 特定技能 求人" and "${company.company_name} 事業内容".
+2. Identify the main business sectors.
+3. Assign a confidence score (0-100) for each relevant sector.
+4. OUTPUT FORMAT: strict comma-separated string of "Code+Score". 
+5. NO EXPLANATION. NO MARKDOWN. NO JSON. ONLY THE CODES.
+6. Minimum score to include is 50.
+
+EXAMPLE OUTPUTS:
+"A95"
+"A90,B60"
+"C85,K50"
+"NA" (if no data found)
+
+YOUR OUTPUT:
 `;
 
     let finalResultTags = "";
-    let usedModel = "";
     
     // 5. EXECUTION LOOP
     outerLoop:
@@ -123,37 +90,42 @@ INSTRUKSI:
                     model: modelName,
                     contents: prompt,
                     config: {
-                        tools: [{ googleSearch: {} }],
-                        responseMimeType: "application/json",
-                        responseSchema: responseSchema
+                        temperature: 0.1, // STRICT DETERMINISTIC
+                        tools: [{ googleSearch: {} }]
                     }
                 });
 
-                const rawText = response.text;
-                if (!rawText) throw new Error("Empty response from AI");
+                const rawText = response.text || "";
+                console.log(`   -> Raw Response: ${rawText.trim()}`);
 
-                // 6. PARSE & VALIDATE JSON
-                const analysisResults: SectorAnalysis[] = JSON.parse(rawText);
-                
-                // Filter & Map to Codes (A90, B80 format)
-                const validTags: string[] = [];
-                
-                analysisResults.forEach(item => {
-                    const code = SECTOR_MAP[item.category_name];
-                    // Double check threshold (Layer 2 filtering)
-                    if (code && item.confidence_score >= 50) {
-                        validTags.push(`${code}${item.confidence_score}`);
-                        console.log(`   -> Found: ${item.category_name} (${item.confidence_score}%) - Ev: ${item.evidence_found}`);
+                // 6. ROBUST PARSING (REGEX)
+                // Captures patterns like "A90", "A 90", "A:90" and normalizes them.
+                // Regex explanation: ([A-L]) captures the code, [^0-9]* skips spacers, (\d{2,3}) captures 2-3 digit score.
+                const regex = /([A-L])[^0-9]*(\d{2,3})/g;
+                let match;
+                const foundTags: string[] = [];
+
+                while ((match = regex.exec(rawText)) !== null) {
+                    const code = match[1];
+                    let score = parseInt(match[2]);
+                    
+                    // Cap score at 100
+                    if (score > 100) score = 100;
+                    
+                    // Filter threshold (Double check)
+                    if (score >= 50) {
+                        foundTags.push(`${code}${score}`);
                     }
-                });
+                }
 
-                if (validTags.length > 0) {
-                    finalResultTags = validTags.join(',');
-                    usedModel = modelName;
-                    await logToSupabase(`[GEMINI-SUCCESS] Mapped: ${finalResultTags} | Ev: ${analysisResults[0].evidence_found.substring(0, 50)}...`);
+                if (foundTags.length > 0) {
+                    finalResultTags = foundTags.join(',');
+                    await logToSupabase(`[GEMINI-SUCCESS] Mapped: ${finalResultTags} (Model: ${modelName})`);
                     break outerLoop;
+                } else if (rawText.includes("NA")) {
+                    console.warn(`   -> AI returned NA (Not Found).`);
                 } else {
-                     console.warn(`   -> Model ${modelName} returned valid JSON but no high confidence sectors.`);
+                    console.warn(`   -> No valid codes found in response.`);
                 }
 
             } catch (err: any) {
@@ -164,7 +136,7 @@ INSTRUKSI:
     }
 
     if (!finalResultTags) {
-        await logToSupabase(`[GEMINI-FAIL] No confident tags found after exhaustive search.`);
+        await logToSupabase(`[GEMINI-FAIL] No tags found.`);
         return "";
     }
     
