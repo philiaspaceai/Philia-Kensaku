@@ -19,8 +19,8 @@ const SECTOR_MAP: Record<string, string> = {
 };
 
 export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
-  console.log(`[AI SERVICE] Starting Client-Side Analysis for ${company.company_name}...`);
-  await logToSupabase(`[START] Analyzing ${company.company_name} via Gemini Multi-Model (Client-Side)`);
+  console.log(`[GEMINI SERVICE] Starting Client-Side Analysis for ${company.company_name}...`);
+  await logToSupabase(`[GEMINI-START] Analyzing ${company.company_name} via Google GenAI SDK`);
 
   try {
     // 1. CONFIG: API KEYS (Injected via Vite define)
@@ -34,11 +34,13 @@ export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
         throw new Error("No API Keys configured. Cek Environment Variable Vercel.");
     }
 
-    // 2. MODELS CONFIGURATION (STRICT)
+    // 2. MODELS CONFIGURATION
+    // Added 1.5-flash as fallback, fixed 3-flash name, kept user preferences.
     const MODELS = [
         'gemini-2.5-flash', 
         'gemini-2.5-flash-lite', 
-        'gemini-3-flash'
+        'gemini-3-flash-preview',
+        'gemini-1.5-flash'
     ];
 
     // 3. PROMPT ENGINEERING (STRICT)
@@ -123,16 +125,21 @@ Persentase harus angka 0–100 tanpa desimal.
     }
 
     if (!finalRawText) {
-        await logToSupabase(`[AI] Failed. All models/keys exhausted.`);
+        await logToSupabase(`[GEMINI-FAIL] All models/keys exhausted.`);
         return "";
     }
 
-    // 5. PARSING OUTPUT
+    // 5. PARSING OUTPUT (Improved Regex)
     const parsedTags: string[] = [];
     const lines = finalRawText.split('\n');
 
     lines.forEach(line => {
-        const match = line.match(/^(.+?)\s*:\s*(\d+)%?/);
+        // Clean bullets (*, -, etc) and trim whitespace
+        const cleanLine = line.replace(/^[\*\-•]\s*/, '').trim();
+        
+        // Match "Label : 80%" or "Label: 80"
+        const match = cleanLine.match(/^(.+?)\s*:\s*(\d+)%?/);
+        
         if (match) {
             const label = match[1].trim();
             const percent = parseInt(match[2], 10);
@@ -148,16 +155,17 @@ Persentase harus angka 0–100 tanpa desimal.
     const resultString = parsedTags.join(',');
 
     if (resultString) {
-        await logToSupabase(`[AI SUCCESS] Tags: "${resultString}" (Model: ${usedModel})`);
+        await logToSupabase(`[GEMINI-SUCCESS] Tags: "${resultString}" (Model: ${usedModel})`);
     } else {
-        await logToSupabase(`[AI WARN] Raw text captured but parsing failed/low confidence.`);
+        await logToSupabase(`[GEMINI-WARN] Raw text captured but parsing failed/low confidence.`);
+        // Optional: Log raw text for debugging if needed, but keeping it clean for now
     }
     
     return resultString;
 
   } catch (error: any) {
-    console.error("❌ [AI SERVICE ERROR]", error);
-    await logToSupabase(`[ERROR] ${error.message}`);
+    console.error("❌ [GEMINI SERVICE ERROR]", error);
+    await logToSupabase(`[GEMINI-ERROR] ${error.message}`);
     return "";
   }
 };

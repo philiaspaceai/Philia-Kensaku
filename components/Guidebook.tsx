@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen, Search, ShieldCheck, Mail, ArrowLeft, Menu, X, Lightbulb, AlertTriangle, CheckCircle, ExternalLink, MapPin, MousePointerClick, Target, Map, Bot, Users, Copy, Check, MessageSquare, Smartphone, FileText, Clock } from 'lucide-react';
@@ -406,7 +405,7 @@ export const Guidebook: React.FC<GuidebookProps> = ({ onBack }) => {
                     <span className="text-primary-600 font-bold tracking-wide uppercase text-sm">Bab 5</span>
                     <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2 mb-4">Tips & Trik</h2>
                     <p className="text-lg text-slate-600 leading-relaxed">
-                        Ini adalah taktik khusus untuk mencari TSK agar emailmu lebih cepat dibalas dan lebih cepat diproses hingga memasuki tahap mendan dan mensetsu. Gunakan AI eksternal (ChatGPT/Gemini) dan teknik "Stalking" untuk memenangkan persaingan.
+                        Ini adalah taktik khusus untuk mencari TSK agar emailmu lebih cepat dibalas dan lebih cepat diproses hingga memasuki tahap mendan dan mensetsu. Gunakan AI eksternal (Gemini) dan teknik "Stalking" untuk memenangkan persaingan.
                     </p>
                 </div>
 
@@ -427,7 +426,7 @@ export const Guidebook: React.FC<GuidebookProps> = ({ onBack }) => {
                         
                         <div className="bg-indigo-50 border border-indigo-100 p-4 rounded-xl mb-4">
                             <p className="text-sm text-indigo-800 font-medium">
-                                <strong>Caranya:</strong> Salin prompt di bawah ini, lalu paste ke ChatGPT atau Gemini di HP Anda. Ganti bagian dalam kurung siku &lt;...&gt; dengan data dari aplikasi ini.
+                                <strong>Caranya:</strong> Salin prompt di bawah ini, lalu paste ke Gemini di HP Anda. Ganti bagian dalam kurung siku &lt;...&gt; dengan data dari aplikasi ini.
                             </p>
                         </div>
 
@@ -485,7 +484,7 @@ Berikan data statistik terbaru.`}
                             <div>
                                 <h3 className="text-2xl font-bold text-slate-900">3. Investigasi Mendalam</h3>
                                 <p className="text-slate-600 mt-2">
-                                    Ini adalah taktik khusus untuk mencari TSK agar emailmu lebih cepat dibalas dan lebih cepat diproses hingga memasuki tahap mendan dan mensetsu. Gunakan AI eksternal (ChatGPT/Gemini) dan teknik "Stalking" untuk memenangkan persaingan.
+                                    Ini adalah taktik khusus untuk mencari TSK agar emailmu lebih cepat dibalas dan lebih cepat diproses hingga memasuki tahap mendan dan mensetsu. Gunakan AI eksternal (Gemini) dan teknik "Stalking" untuk memenangkan persaingan.
                                 </p>
                             </div>
                         </div>
