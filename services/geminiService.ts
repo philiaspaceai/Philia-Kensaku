@@ -5,8 +5,10 @@ import { TSKData } from "../types";
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
-  // REVERT: Menggunakan model 2.5 Flash sesuai request user
-  const model = "gemini-2.5-flash"; 
+  // UPGRADE: Gemini 3 Flash Preview
+  // Limit Ramah: 15 RPM (Request Per Minute) pada tier gratis, jauh lebih tinggi di Pay-as-you-go.
+  // Latency sangat rendah, cocok untuk realtime UI.
+  const model = "gemini-3-flash-preview"; 
 
   const prompt = `
     Analyze this Japanese Registered Support Organization (TSK).
@@ -15,7 +17,9 @@ export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
     Reg Number: ${company.reg_number}
 
     Task: Search Google to identify which of these business sectors they handle or recruit for. 
-    Map them to these codes:
+    Assign a PROBABILITY PERCENTAGE (0-100%) based on the strength of evidence (job postings, website content).
+
+    Codes:
     A: Nursing Care / Kaigo
     B: Building Cleaning
     C: Construction
@@ -30,10 +34,13 @@ export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
     L: Food Service / Restaurant
 
     Instructions:
-    1. Search for their official website or job postings (Hello Work, Indeed, etc.).
-    2. If they are a general HR firm with no specific sector mentioned, return "GENERAL".
-    3. Return ONLY the codes separated by commas (e.g., "A,I,K"). 
-    4. If no specific info found, return empty string.
+    1. Search for their official website or job postings.
+    2. Return the codes followed immediately by the percentage number (e.g., "A90").
+    3. Return ONLY the codes separated by commas.
+    4. SORT the result by percentage DESCENDING (Highest first).
+    5. If general/unknown, return empty string.
+
+    Example Output: "A95,K80,D50"
   `;
 
   try {
@@ -48,11 +55,20 @@ export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
 
     const text = response.text || "";
     
-    // Simple extraction of codes A-L
-    const matches = text.match(/[A-L]/g);
+    // Regex to match "Letter" followed by "Numbers" (e.g. A90, B100)
+    // Matches A-L followed by 1 to 3 digits
+    const matches = text.match(/[A-L]\d{1,3}/g);
+    
     if (matches && matches.length > 0) {
+      // Manual sorting to be 100% sure (AI sometimes forgets sorting)
+      const sortedTags = matches.sort((a, b) => {
+        const percentA = parseInt(a.substring(1));
+        const percentB = parseInt(b.substring(1));
+        return percentB - percentA; // Descending
+      });
+
       // Remove duplicates and join
-      return [...new Set(matches)].join(",");
+      return [...new Set(sortedTags)].join(",");
     }
     
     return "";
