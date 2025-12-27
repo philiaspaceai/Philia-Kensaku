@@ -4,11 +4,25 @@ import { TSKData } from "../types";
 // NOTE: process.env.API_KEY is defined in vite.config.ts
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
+/**
+ * Limitasi Model (Per 26 Des 2025):
+ * Model: gemini-2.0-flash-exp
+ * 
+ * Free Tier:
+ * - 10 RPM (Requests Per Minute)
+ * - 1,500 RPD (Requests Per Day)
+ * 
+ * Pay-as-you-go:
+ * - 1,000 RPM (Requests Per Minute) - Jauh lebih tinggi
+ * 
+ * Jika terjadi error di Google Cloud Metrics, kemungkinan karena:
+ * 1. Model Name typo/tidak tersedia (404) -> Kita ganti ke 'gemini-2.0-flash-exp'
+ * 2. Rate Limit Exceeded (429) -> Tunggu sebentar antar request.
+ */
+
 export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
-  // UPGRADE: Gemini 3 Flash Preview
-  // Limit Ramah: 15 RPM (Request Per Minute) pada tier gratis, jauh lebih tinggi di Pay-as-you-go.
-  // Latency sangat rendah, cocok untuk realtime UI.
-  const model = "gemini-3-flash-preview"; 
+  // CHANGE: Menggunakan gemini-2.0-flash-exp yang lebih stabil akses publiknya.
+  const model = "gemini-2.0-flash-exp"; 
 
   const prompt = `
     Analyze this Japanese Registered Support Organization (TSK).
@@ -74,6 +88,7 @@ export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
     return "";
   } catch (error) {
     console.error("Gemini Analysis Error:", error);
+    // Return empty string so UI handles it gracefully (just skips saving tags)
     return "";
   }
 };
