@@ -1,18 +1,21 @@
 
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Languages, Briefcase, CheckCircle, XCircle, ExternalLink, Heart, Calendar, History, Mail } from 'lucide-react';
 import { TSKData } from '../types';
 import { toggleLikeTSK } from '../services/tskService';
 import { EmailGeneratorModal } from './modals/EmailGeneratorModal';
+import { TSK_TAGS } from '../constants';
 
 interface TSKCardProps {
   item: TSKData;
   index: number;
   initialLiked: boolean;
+  onCariTahu: (item: TSKData) => void; // Parent handler for AI process
 }
 
-export const TSKCard: React.FC<TSKCardProps> = ({ item, index, initialLiked }) => {
+export const TSKCard: React.FC<TSKCardProps> = ({ item, index, initialLiked, onCariTahu }) => {
   // Update logic based on new DB values: 'Branch' vs 'Head Office'
   const isBranch = item.office_type === 'Branch';
   const officeTypeLabel = isBranch ? 'Kantor Cabang' : 'Kantor Pusat';
@@ -77,44 +80,31 @@ export const TSKCard: React.FC<TSKCardProps> = ({ item, index, initialLiked }) =
   const displayAddress = (isBranch && item.branch_address) ? item.branch_address : item.address;
   const displayZip = (isBranch && item.branch_zipcode) ? item.branch_zipcode : item.zipcode;
 
-  const handleGoogleSearch = () => {
-    // SUPER PROMPT LOGIC - VERSION 4.1
-    const identity = `No. Registrasi: ${item.reg_number}`;
-    const location = `Alamat: ${displayAddress}`;
-    const ceo = item.representative ? `CEO: ${item.representative}` : '';
+  // Render Tags
+  const renderTags = () => {
+    if (!item.tags) return null;
+    
+    const codes = item.tags.split(',').filter(c => c.trim() !== '');
+    if (codes.length === 0) return null;
 
-    const promptInstructions = `
-      Saya ingin kamu melakukan research dan pencarian di google secara mendalam, mendetail, dan super akurat dengan pencarian berbahasa jepang di google mengenai TSK: "${displayName}".
-      Data Validasi untuk memastikan perusahaan yang benar: ${identity}, ${location}, ${ceo}.
-
-      ⚠️ PROTOKOL WAJIB (STRICT RULES):
-      1. NO FAKE LINKS: Haram hukumnya memberikan informasi tanpa LINK BUKTI (URL) yang valid dan bisa diklik.
-      2. EVIDENCE FIRST: Setiap klaim harus didukung oleh sumber url (Website resmi, Portal berita, Database pemerintah, atau Sosmed).
-
-      Jawab 4 Poin Kunci ini secara mendetail dalam Bahasa Indonesia:
-
-      1. 🕵️ DIGITAL FOOTPRINT & SOSMED (WAJIB ADA LINK):
-      Temukan akun Instagram, Facebook, LinkedIn, atau Twitter resmi mereka yang terbaru.
-      Format: "Platform: [Nama] - [URL Link]" (Pastikan Link Aktif).
-
-      2. 📊 PREDIKSI JOB & PERSENTASE AKURASI:
-      Berdasarkan histori jejak digital (iklan lama/baru), prediksi jenis pekerjaan Tokutei Ginou (SSW) yang tersedia.
-      Format: "Bidang: [Contoh: Kaigo/Pertanian] (Akurasi: [0-100]%)".
-      WAJIB: Sertakan [LINK BUKTI] iklan lowongan atau halaman rekrutmen yang menjadi dasar analisa Anda.
-
-      3. 🗺️ PETA JALAN MELAMAR (APPLICATION HACK):
-      Analisa struktur website mereka untuk mencari pintu masuk pelamar.
-      SANGAT WAJIB: Temukan dan lampirkan URL khusus menuju "Direct Contact Form" (Formulir Kontak/Inquiry) yang ada di website mereka.
-      Apakah ada Email HRD spesifik? Berikan panduan langkah demi langkah melamar beserta [LINK DIRECT FORM] yang valid.
-
-      4. 💀 DEEP DIVE FAKTA & REPUTASI:
-      Gali "Underground Info". Cari ulasan Google Maps, artikel berita lokal, atau daftar "Black Kigyou".
-      Apakah perusahaan ini bersih? Atau ada skandal?
-      Sertakan [LINK SUMBER] untuk setiap fakta yang Anda temukan.
-    `.trim().replace(/\s+/g, ' '); 
-
-    const url = `https://www.google.com/search?q=${encodeURIComponent(promptInstructions)}&udm=50`;
-    window.open(url, '_blank');
+    return (
+        <div className="flex flex-wrap gap-1.5 mb-3">
+            {codes.slice(0, 3).map(code => {
+                const tag = TSK_TAGS[code.trim()];
+                if (!tag) return null;
+                return (
+                    <span key={code} className={`text-[10px] font-bold px-2 py-0.5 rounded-full border border-current opacity-90 ${tag.color} ${tag.bg}`}>
+                        {tag.label}
+                    </span>
+                );
+            })}
+            {codes.length > 3 && (
+                <span className="text-[10px] font-bold px-1.5 py-0.5 text-slate-400 bg-slate-50 rounded-full">
+                    +{codes.length - 3}
+                </span>
+            )}
+        </div>
+    );
   };
 
   return (
@@ -159,6 +149,9 @@ export const TSKCard: React.FC<TSKCardProps> = ({ item, index, initialLiked }) =
         
         {isBranch && <p className="text-xs text-slate-500 mb-3">HQ: {item.company_name}</p>}
         <div className="text-xs text-slate-400 font-mono mb-2">#{item.reg_number}</div>
+
+        {/* AI Tags Display */}
+        {renderTags()}
 
         {/* Info Dates (Registration & Operation) */}
         <div className="grid grid-cols-2 gap-3 mb-4 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
@@ -252,7 +245,7 @@ export const TSKCard: React.FC<TSKCardProps> = ({ item, index, initialLiked }) =
         {/* Tombol Cari TSK (Super Prompt) */}
         <div className="p-[2px] rounded-xl bg-gradient-to-r from-primary-600 via-sakura-500 to-primary-600 animate-gradient-xy group shadow-sm hover:shadow-md transition-shadow">
           <button 
-            onClick={handleGoogleSearch}
+            onClick={() => onCariTahu(item)}
             className="w-full h-full flex items-center justify-center gap-2 bg-white text-slate-800 font-bold py-3 rounded-[10px] text-sm transition-all duration-200 hover:bg-slate-50"
           >
             <span>Cari tahu</span>

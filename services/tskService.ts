@@ -1,4 +1,5 @@
 
+
 import { supabase } from './supabaseClient';
 import { TSKData, SearchFilters } from '../types';
 
@@ -148,4 +149,17 @@ export const toggleLikeTSK = async (tskId: number) => {
   if (error) throw error;
   
   return data as { liked: boolean, total: number };
+};
+
+// Update Tags
+export const updateTSKTags = async (id: number, tags: string) => {
+  const { error } = await supabase
+    .from(TABLE_NAME)
+    .update({ tags: tags })
+    .eq('id', id);
+
+  if (error) {
+    console.error("Error updating tags", error);
+    throw error;
+  }
 };

@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, MapPin, Filter, X, ChevronLeft, ChevronRight, Info, ExternalLink, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -11,14 +12,18 @@ import { Guidebook } from './components/Guidebook';
 import { Information } from './components/Information';
 import { LocationModal } from './components/modals/LocationModal';
 import { LanguageModal } from './components/modals/LanguageModal';
+import { HiddenProcess } from './components/HiddenProcess';
 
 function App() {
   // View State: 'search' | 'guidebook' | 'info'
   const [view, setView] = useState<'search' | 'guidebook' | 'info'>('search');
 
-  // Modal States (Lifted from AdvancedFilter to fix Z-Index/Stacking Context)
+  // Modal States
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
+  
+  // AI Process State
+  const [processingItem, setProcessingItem] = useState<TSKData | null>(null);
 
   // Search State
   const [mode, setMode] = useState<SearchMode>('simple');
@@ -89,6 +94,70 @@ function App() {
 
   const handleLanguageSave = (included: string[], excluded: string[]) => {
     setFilters({ ...filters, languages: included, excludedLanguages: excluded });
+  };
+  
+  // Handle Cari Tahu (AI Integration)
+  const handleCariTahu = (item: TSKData) => {
+      // If tags exist, skip AI and go straight to Google
+      if (item.tags && item.tags.length > 0) {
+          executeGoogleSearch(item);
+      } else {
+          // Open Hidden Process for Analysis
+          setProcessingItem(item);
+      }
+  };
+
+  const handleProcessComplete = () => {
+      if (processingItem) {
+          executeGoogleSearch(processingItem);
+          setProcessingItem(null); // Close modal
+          
+          // Optional: Refresh data to show new tags immediately without page reload
+          // But for now, we rely on local navigation. A full refresh might be jarring.
+      }
+  };
+
+  const executeGoogleSearch = (item: TSKData) => {
+    const isBranch = item.office_type === 'Branch';
+    const displayName = (isBranch && item.branch_name) ? item.branch_name : item.company_name;
+    const displayAddress = (isBranch && item.branch_address) ? item.branch_address : item.address;
+
+    const identity = `No. Registrasi: ${item.reg_number}`;
+    const location = `Alamat: ${displayAddress}`;
+    const ceo = item.representative ? `CEO: ${item.representative}` : '';
+
+    const promptInstructions = `
+      Saya ingin kamu melakukan research dan pencarian di google secara mendalam, mendetail, dan super akurat dengan pencarian berbahasa jepang di google mengenai TSK: "${displayName}".
+      Data Validasi untuk memastikan perusahaan yang benar: ${identity}, ${location}, ${ceo}.
+
+      ⚠️ PROTOKOL WAJIB (STRICT RULES):
+      1. NO FAKE LINKS: Haram hukumnya memberikan informasi tanpa LINK BUKTI (URL) yang valid dan bisa diklik.
+      2. EVIDENCE FIRST: Setiap klaim harus didukung oleh sumber url (Website resmi, Portal berita, Database pemerintah, atau Sosmed).
+
+      Jawab 4 Poin Kunci ini secara mendetail dalam Bahasa Indonesia:
+
+      1. 🕵️ DIGITAL FOOTPRINT & SOSMED (WAJIB ADA LINK):
+      Temukan akun Instagram, Facebook, LinkedIn, atau Twitter resmi mereka yang terbaru.
+      Format: "Platform: [Nama] - [URL Link]" (Pastikan Link Aktif).
+
+      2. 📊 PREDIKSI JOB & PERSENTASE AKURASI:
+      Berdasarkan histori jejak digital (iklan lama/baru), prediksi jenis pekerjaan Tokutei Ginou (SSW) yang tersedia.
+      Format: "Bidang: [Contoh: Kaigo/Pertanian] (Akurasi: [0-100]%)".
+      WAJIB: Sertakan [LINK BUKTI] iklan lowongan atau halaman rekrutmen yang menjadi dasar analisa Anda.
+
+      3. 🗺️ PETA JALAN MELAMAR (APPLICATION HACK):
+      Analisa struktur website mereka untuk mencari pintu masuk pelamar.
+      SANGAT WAJIB: Temukan dan lampirkan URL khusus menuju "Direct Contact Form" (Formulir Kontak/Inquiry) yang ada di website mereka.
+      Apakah ada Email HRD spesifik? Berikan panduan langkah demi langkah melamar beserta [LINK DIRECT FORM] yang valid.
+
+      4. 💀 DEEP DIVE FAKTA & REPUTASI:
+      Gali "Underground Info". Cari ulasan Google Maps, artikel berita lokal, atau daftar "Black Kigyou".
+      Apakah perusahaan ini bersih? Atau ada skandal?
+      Sertakan [LINK SUMBER] untuk setiap fakta yang Anda temukan.
+    `.trim().replace(/\s+/g, ' '); 
+
+    const url = `https://www.google.com/search?q=${encodeURIComponent(promptInstructions)}&udm=50`;
+    window.open(url, '_blank');
   };
 
   const totalPages = Math.ceil(totalCount / 20);
@@ -261,6 +330,7 @@ function App() {
                   item={item} 
                   index={index} 
                   initialLiked={likedIds.has(item.id)}
+                  onCariTahu={handleCariTahu}
                 />
               ))}
             </div>
@@ -345,6 +415,17 @@ function App() {
                 <Information onBack={() => setView('search')} />
              </motion.div>
           )}
+       </AnimatePresence>
+       
+       {/* AI Processing Modal */}
+       <AnimatePresence>
+         {processingItem && (
+             <HiddenProcess 
+                item={processingItem}
+                onClose={() => setProcessingItem(null)}
+                onComplete={handleProcessComplete}
+             />
+         )}
        </AnimatePresence>
        
        {/* Modals placed OUTSIDE the motion.div to prevent stacking context issues with fixed positioning */}

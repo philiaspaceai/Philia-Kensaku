@@ -1,6 +1,23 @@
 
+
 export const SUPABASE_URL = "https://xxnsvylzzkgcnubaegyv.supabase.co";
 export const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4bnN2eWx6emtnY251YmFlZ3l2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0MDE0MjcsImV4cCI6MjA3OTk3NzQyN30.x0wz0v_qqvg6riMipKMr3IM30YnGaGs1b9uMvJRGG5M";
+
+// TAG MAPPING SYSTEM (Code -> Label & Color)
+export const TSK_TAGS: Record<string, { label: string, color: string, bg: string }> = {
+  "A": { label: "Perawat Lansia (Kaigo)", color: "text-rose-600", bg: "bg-rose-50" },
+  "B": { label: "Cleaning Service", color: "text-sky-600", bg: "bg-sky-50" },
+  "C": { label: "Konstruksi", color: "text-amber-600", bg: "bg-amber-50" },
+  "D": { label: "Manufaktur/Pabrik", color: "text-slate-600", bg: "bg-slate-100" },
+  "E": { label: "Elektronik/Listrik", color: "text-yellow-600", bg: "bg-yellow-50" },
+  "F": { label: "Otomotif", color: "text-red-600", bg: "bg-red-50" },
+  "G": { label: "Penerbangan (Bandara)", color: "text-blue-600", bg: "bg-blue-50" },
+  "H": { label: "Perhotelan", color: "text-violet-600", bg: "bg-violet-50" },
+  "I": { label: "Pertanian", color: "text-green-600", bg: "bg-green-50" },
+  "J": { label: "Perikanan", color: "text-teal-600", bg: "bg-teal-50" },
+  "K": { label: "Makanan & Minuman (F&B)", color: "text-orange-600", bg: "bg-orange-50" },
+  "L": { label: "Restoran (Food Service)", color: "text-pink-600", bg: "bg-pink-50" }
+};
 
 // Updated to International Format
 export const LANGUAGES = [

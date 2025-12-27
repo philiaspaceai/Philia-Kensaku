@@ -18,6 +18,7 @@ export interface TSKData {
   language: string | null;
   note: string | null;
   total_likes: number; // New field for like count
+  tags: string | null; // New field for AI Tags (Comma separated codes like "A,B,K")
 }
 
 export interface SearchFilters {
