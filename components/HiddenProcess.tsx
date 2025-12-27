@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BrainCircuit, Search, Database, ArrowRight, X } from 'lucide-react';
+import { BrainCircuit, Search, Database, ArrowRight, X, ShieldCheck } from 'lucide-react';
 import { TSKData } from '../types';
 import { analyzeCompanyTags } from '../services/geminiService';
 import { updateTSKTags } from '../services/tskService';
@@ -24,9 +24,9 @@ export const HiddenProcess: React.FC<HiddenProcessProps> = ({ item, onClose, onC
       try {
         // STEP 1: ANALYZE
         setStep(0);
-        setStatusText(`Menganalisa ${item.company_name}...`);
+        setStatusText(`Dual-Engine Scan: ${item.company_name}...`);
         
-        // Call Gemini
+        // Call Gemini (with OpenAI Fallback inside)
         const tags = await analyzeCompanyTags(item);
         
         if (!isMounted) return;
@@ -34,10 +34,10 @@ export const HiddenProcess: React.FC<HiddenProcessProps> = ({ item, onClose, onC
         // STEP 2: SAVE (Only if tags found)
         if (tags) {
             setStep(1);
-            setStatusText("Menyimpan Data...");
+            setStatusText("Menyimpan Temuan Data...");
             await updateTSKTags(item.id, tags);
         } else {
-            setStatusText("Data spesifik tidak ditemukan, melanjutkan...");
+            setStatusText("Data spesifik tidak terdeteksi, melanjutkan...");
         }
 
         if (!isMounted) return;
@@ -76,7 +76,7 @@ export const HiddenProcess: React.FC<HiddenProcessProps> = ({ item, onClose, onC
         {/* Background Animation */}
         <div className="absolute top-0 left-0 w-full h-1 bg-slate-100">
             <motion.div 
-                className="h-full bg-gradient-to-r from-primary-500 to-sakura-500"
+                className="h-full bg-gradient-to-r from-primary-500 via-indigo-500 to-sakura-500 animate-gradient-xy"
                 initial={{ width: "0%" }}
                 animate={{ width: step === 0 ? "40%" : step === 1 ? "80%" : "100%" }}
                 transition={{ duration: 0.5 }}
@@ -85,22 +85,22 @@ export const HiddenProcess: React.FC<HiddenProcessProps> = ({ item, onClose, onC
 
         <div className="mb-6 flex justify-center">
             <div className="relative">
-                <div className="absolute inset-0 bg-primary-200 rounded-full blur-xl animate-pulse"></div>
+                <div className="absolute inset-0 bg-indigo-200 rounded-full blur-xl animate-pulse"></div>
                 <div className="bg-white p-4 rounded-full shadow-lg relative z-10">
                     <AnimatePresence mode="wait">
                         {step === 0 && (
                             <motion.div key="scan" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                                <Search className="w-8 h-8 text-primary-600 animate-bounce" />
+                                <BrainCircuit className="w-8 h-8 text-indigo-600 animate-pulse" />
                             </motion.div>
                         )}
                         {step === 1 && (
                             <motion.div key="save" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                                <Database className="w-8 h-8 text-sakura-500 animate-pulse" />
+                                <Database className="w-8 h-8 text-sakura-500 animate-bounce" />
                             </motion.div>
                         )}
                         {step === 2 && (
                             <motion.div key="done" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                                <ArrowRight className="w-8 h-8 text-green-500" />
+                                <ShieldCheck className="w-8 h-8 text-green-500" />
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -108,21 +108,19 @@ export const HiddenProcess: React.FC<HiddenProcessProps> = ({ item, onClose, onC
             </div>
         </div>
 
-        <h3 className="text-xl font-bold text-slate-800 mb-2">AI Sedang Bekerja</h3>
-        <p className="text-slate-500 text-sm mb-6">{statusText}</p>
+        <h3 className="text-xl font-bold text-slate-800 mb-2">Philia AI Intelligence</h3>
+        <p className="text-slate-500 text-sm mb-6 font-medium">{statusText}</p>
 
         <div className="space-y-2">
-            <div className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${step >= 0 ? 'bg-primary-50 border-primary-100 text-primary-700' : 'bg-slate-50 border-slate-100 text-slate-400'}`}>
-                <BrainCircuit className="w-5 h-5" />
-                <span className="text-sm font-semibold">Mencari Jejak Digital</span>
+            <div className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${step >= 0 ? 'bg-indigo-50 border-indigo-100 text-indigo-700' : 'bg-slate-50 border-slate-100 text-slate-400'}`}>
+                <Search className="w-5 h-5" />
+                <span className="text-sm font-semibold">Deep Web Search (Gemini/OpenAI)</span>
             </div>
             <div className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${step >= 1 ? 'bg-sakura-50 border-sakura-100 text-sakura-700' : 'bg-slate-50 border-slate-100 text-slate-400'}`}>
                 <Database className="w-5 h-5" />
-                <span className="text-sm font-semibold">Menyimpan Kategori TSK</span>
+                <span className="text-sm font-semibold">Validasi & Kategori TSK</span>
             </div>
         </div>
-
-        {/* TOMBOL LEWATI SUDAH DIHAPUS DISINI AGAR USER MENUNGGU */}
       </motion.div>
     </div>
   );

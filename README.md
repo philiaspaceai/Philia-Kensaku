@@ -18,27 +18,29 @@ Philia Kensaku adalah inisiatif **Non-Profit** dari komunitas untuk membantu pek
 - **Advanced Filter**: Saring TSK berdasarkan **Prefektur**, **Bahasa Indonesia**, dan **Dukungan Legal vs Opsional**.
 - **Smart Sorting**: Urutkan berdasarkan popularitas (Likes) atau tanggal mulai operasi terbaru.
 
-### 2. 🤖 AI Background Analysis (Auto-Tagging)
-Sistem cerdas yang berjalan di latar belakang untuk menganalisis spesialisasi perusahaan TSK.
-- **Job Probability Score**: AI memindai jejak digital perusahaan dan memberikan skor persentase (Contoh: **Kaigo 95%**, **Pertanian 80%**).
-- **Visual Tags**: Menampilkan label bidang pekerjaan secara otomatis pada kartu perusahaan berdasarkan hasil analisis data.
+### 2. 🤖 AI Background Analysis (High Precision)
+Sistem cerdas yang berjalan di latar belakang untuk menganalisis spesialisasi perusahaan TSK dengan standar akurasi tinggi.
+- **Smart Filtering (>85%)**: Sistem menggunakan *Hybrid Logic* di mana Regex Filter secara otomatis mengeliminasi hasil analisis dengan probabilitas di bawah **85%**. Hanya data dengan tingkat keyakinan tinggi yang ditampilkan.
+- **Job Probability Score**: Memberikan skor spesifik (Contoh: **Kaigo 95%**, **Pertanian 88%**) berdasarkan jejak digital dan postingan rekrutmen perusahaan.
+- **Visual Tags**: Label bidang pekerjaan muncul otomatis pada kartu perusahaan untuk memudahkan identifikasi spesialisasi TSK.
 
 ### 3. 🕵️ Protokol Detektif "Strict Mode"
-Fitur **"Cari Tahu"** kini ditenagai oleh *Prompt Engineering* tingkat lanjut yang agresif:
-- **Anti-Halusinasi**: Memaksa mesin pencari untuk menyertakan **LINK BUKTI** valid untuk setiap klaim.
-- **Application Hack**: Instruksi khusus untuk mencari **Email HRD**, **Formulir Kontak Tersembunyi**, dan pintu belakang rekrutmen.
-- **Deep Reputation Check**: Menggali database "Black Kigyou" dan ulasan lokal untuk memastikan keamanan pelamar.
+Fitur **"Cari Tahu"** kini ditenagai oleh *Prompt Engineering* tingkat lanjut dengan aturan ketat:
+- **Evidence First**: Mesin pencari diprogram untuk "haram" memberikan informasi tanpa **LINK BUKTI** valid. Setiap klaim harus disertai sumber URL.
+- **Anti-Hallucination**: Meminimalkan informasi palsu dengan mewajibkan verifikasi silang data CEO dan Nomor Registrasi.
+- **Application Hack**: Instruksi khusus untuk mencari **Email HRD**, **Formulir Kontak Tersembunyi**, dan pintu belakang rekrutmen yang sering terlewat oleh pencarian biasa.
+- **Deep Reputation Check**: Menggali database "Black Kigyou" dan ulasan lokal.
 
 ### 4. 📝 Email Generator Otomatis
 Tidak perlu bingung menulis surat lamaran. Fitur ini membuatkan **Cover Letter** dalam Bahasa Jepang standar bisnis (`Keigo`) secara otomatis.
 - **Auto-Format**: Menyesuaikan isi surat berdasarkan sertifikat JLPT/SSW yang Anda miliki.
-- **Professional Template**: Struktur kalimat yang sopan dan disukai HRD Jepang.
+- **Professional Template**: Struktur kalimat yang sopan dan disukai HRD Jepang, lengkap dengan placeholder untuk kontak.
 
 ### 5. 📚 Philia Guidebook
 Panduan lengkap interaktif di dalam aplikasi yang membahas:
 - Strategi mencari TSK "Kolam Kecil" (Persaingan rendah).
 - Teknik OSINT (Open Source Intelligence) untuk riset perusahaan.
-- Peta krisis tenaga kerja di Jepang.
+- Peta krisis tenaga kerja di Jepang & strategi "Golden Hour".
 
 ---
 
