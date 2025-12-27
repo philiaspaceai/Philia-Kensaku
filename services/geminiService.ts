@@ -9,13 +9,14 @@ export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
   const model = "gemini-2.5-flash"; 
 
   const prompt = `
-    Analyze this Japanese Registered Support Organization (TSK).
+    Do deep research and analyze this Japanese Registered Support Organization (TSK).
     Company Name: ${company.company_name}
     Address: ${company.address}
     Reg Number: ${company.reg_number}
 
-    Task: Search Google to identify which of these business sectors they handle or recruit for. 
+    Task: Search Google to research deeply and identify which of these business sectors they handle or recruit for. 
     Assign a PROBABILITY PERCENTAGE (0-100%) based on the strength of evidence (job postings, website content).
+	You must find and get 10 strong evidence (It could be website that provides the related information, articles, etc.) to increase your accuracy in calculating the percentage.
 
     Codes:
     A: Nursing Care / Kaigo
