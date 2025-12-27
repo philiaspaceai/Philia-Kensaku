@@ -1,12 +1,12 @@
 import { GoogleGenAI, HarmCategory, HarmBlockThreshold } from "@google/genai";
 import { TSKData } from "../types";
 import { analyzeWithOpenAI } from "./openaiProxy";
+import { logToSupabase } from "./tskService"; // Import Logger
 
 // NOTE: process.env.API_KEY is defined in vite.config.ts
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
-  // UPGRADE MODEL: Menggunakan Gemini 2.0 Flash yang lebih stabil & kuota lebih besar
   const model = "gemini-2.0-flash"; 
 
   const prompt = `
@@ -46,6 +46,7 @@ export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
   try {
     // STEP 1: COBA GEMINI (PRIMARY)
     console.log(`[AI PRIMARY] Mencoba Gemini ${model}...`);
+    // await logToSupabase(`[START GEMINI] ${company.company_name} (${company.reg_number})`);
     
     const response = await ai.models.generateContent({
       model: model,
@@ -72,19 +73,36 @@ export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
                  response.candidates?.[0]?.content?.parts?.[0]?.text || 
                  "";
     
+    // Log Gemini Success
+    // await logToSupabase(`[GEMINI SUCCESS] Raw: ${text.substring(0, 50)}...`);
+
     return parseTags(text);
 
   } catch (error: any) {
     // STEP 2: FAILOVER KE OPENAI (BACKUP)
-    // Jika Gemini error (429 Limit, 503 Overloaded, atau error lain), alihkan ke OpenAI
     console.warn("⚠️ [AI PRIMARY FAILED] Gemini bermasalah:", error.message);
+    
+    // LOG KE SUPABASE AGAR BISA DITRACK
+    await logToSupabase(`[FAILOVER START] Gemini Error: ${error.message}. Switching to OpenAI for ${company.company_name}`);
+
     console.log("🔄 [FAILOVER] Mengalihkan ke OpenAI (GPT-4o-Mini)...");
     
     try {
         const openAiResult = await analyzeWithOpenAI(company);
-        return parseTags(openAiResult);
-    } catch (backupError) {
+        
+        // LOG RAW RESULT DARI OPENAI
+        await logToSupabase(`[OPENAI RAW] ${company.company_name}: "${openAiResult}"`);
+        
+        const parsed = parseTags(openAiResult);
+        
+        // LOG HASIL PARSING
+        await logToSupabase(`[OPENAI PARSED] ${company.company_name}: "${parsed}"`);
+
+        return parsed;
+
+    } catch (backupError: any) {
         console.error("❌ [SYSTEM FAILURE] Kedua AI gagal.", backupError);
+        await logToSupabase(`[CRITICAL ERROR] OpenAI Failed: ${backupError.message}`);
         return "";
     }
   }

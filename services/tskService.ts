@@ -1,5 +1,3 @@
-
-
 import { supabase } from './supabaseClient';
 import { TSKData, SearchFilters } from '../types';
 
@@ -19,6 +17,24 @@ export const getDeviceId = (): string => {
   
   return deviceId;
 };
+
+// --- LOGGING SYSTEM (DEBUGGING) ---
+export const logToSupabase = async (message: string) => {
+  try {
+    // Insert log message to 'log_ai' table
+    // Supabase auto-generates id and created_at
+    const { error } = await supabase.from('log_ai').insert({ log: message });
+    
+    if (error) {
+      console.error("⚠️ Gagal kirim log ke Supabase:", error.message);
+    } else {
+      console.log("✅ Log terkirim ke Supabase");
+    }
+  } catch (err) {
+    console.error("System Error Logging:", err);
+  }
+};
+// ----------------------------------
 
 // Get Total Count of Records (Lightweight)
 export const fetchTotalCount = async (): Promise<number> => {

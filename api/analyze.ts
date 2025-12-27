@@ -2,7 +2,7 @@ import OpenAI from 'openai';
 
 // Vercel Serverless Function Handler
 export default async function handler(req: any, res: any) {
-  // CORS Handling for local dev or cross-origin usage
+  // CORS Handling
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
@@ -20,8 +20,6 @@ export default async function handler(req: any, res: any) {
   try {
     const { companyName, address, regNumber } = req.body;
 
-    // SECURITY UPDATE: Hanya mengambil key dari Environment Variable.
-    // Pastikan OPENAI_API_KEY sudah diset di Vercel Project Settings.
     const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
@@ -33,13 +31,13 @@ export default async function handler(req: any, res: any) {
 
     // Prompt yang sama kuatnya dengan Gemini
     const prompt = `
-    Analyze this Japanese TSK Company deeply.
+    Analyze this Japanese TSK Company.
     Company Name: ${companyName}
     Address: ${address}
     Reg Number: ${regNumber}
 
-    Task: Search the web to identify business sectors they handle or recruit for. 
-    Assign a PROBABILITY PERCENTAGE (0-100%) based on evidence found on their website/job postings.
+    Task: Identify which of these business sectors they recruit for Tokutei Ginou (SSW) based on your knowledge base.
+    Assign a PROBABILITY PERCENTAGE (0-100%).
 
     Codes:
     A: Nursing Care / Kaigo
@@ -56,21 +54,26 @@ export default async function handler(req: any, res: any) {
     L: Food Service / Restaurant
 
     Instructions:
-    1. Use "web_search" tool to find their homepage and recruit info.
-    2. Return ONLY the codes followed by percentage, separated by commas (e.g., "A95,K88").
-    3. If uncertain, return empty string.
+    1. Return ONLY the codes followed by percentage, separated by commas (e.g., "A95,K88").
+    2. Do NOT add any markdown or explanation.
+    3. If uncertain, return "UNKNOWN".
     `;
 
-    // IMPLEMENTASI SPESIFIK SESUAI REQUEST BOS (client.responses.create)
-    // Menggunakan 'as any' untuk bypass TypeScript checking pada fitur beta/custom ini
-    const response = await (client as any).responses.create({
+    // FIX: Gunakan standar 'chat.completions.create'
+    // NOTE: gpt-4o-mini standard tidak memiliki akses web_search bawaan tanpa addons. 
+    // Kita gunakan model standard untuk analisa pattern nama/alamat/reputasi.
+    const completion = await client.chat.completions.create({
       model: "gpt-4o-mini",
-      tools: [{ type: "web_search" }],
-      input: prompt,
+      messages: [
+        { role: "system", content: "You are an expert Japanese Business Analyst." },
+        { role: "user", content: prompt }
+      ],
+      temperature: 0.1, // Lebih presisi
+      max_tokens: 50,
     });
 
-    // Mengambil output text sesuai instruksi
-    const resultText = response.output_text || "";
+    // Ambil hasil text standard
+    const resultText = completion.choices[0]?.message?.content?.trim() || "";
 
     return res.status(200).json({ result: resultText });
 
