@@ -29,61 +29,52 @@ export default async function handler(req: any, res: any) {
 
     const client = new OpenAI({ apiKey });
 
-    // PROMPT BARU: Predictive Profiling
-    // Karena GPT-4o-mini API standar tidak bisa browsing web, kita minta dia menebak berdasarkan pola nama dan lokasi.
+    // PROMPT: Deep Analysis with Web Search
+    // Instruksi dipersingkat dan diperjelas untuk format output string
     const prompt = `
-    Analyze this Japanese TSK (Registered Support Organization).
+    Search the web deeply for this Japanese TSK (Registered Support Organization):
     Company Name: ${companyName}
     Address: ${address}
     Reg Number: ${regNumber}
 
-    Task: Predict the likely Tokutei Ginou (SSW) business sectors based on the Company Name Keywords and Location characteristics.
+    Task: Identify the specific business sectors they recruit for (Tokutei Ginou/SSW).
     
-    Logic for Prediction (Use this priority):
-    1. KEYWORDS:
-       - "Care", "Fukushi", "Kaigo", "Life" -> Assign A (Nursing Care) with 95%.
-       - "Build", "Kensetsu", "Kougyou", "Tech" -> Assign C (Construction) with 90%.
-       - "Farm", "Agri", "Nogyo", "Green" -> Assign I (Agriculture) with 90%.
-       - "Food", "Shokuhin", "Meat", "Deli" -> Assign K (Food Mfg) with 90%.
-       - "Hotel", "Resort", "Inn" -> Assign H (Hotel) with 90%.
-       - "Auto", "Motor", "Seibi" -> Assign F (Auto Repair) with 90%.
-    
-    2. GENERAL INFERENCE (If name is generic like "International", "Support", "Consulting"):
-       - These TSKs typically handle high-demand sectors.
-       - Assign 'A' (Nursing Care) with 75%.
-       - Assign 'K' (Food & Bev Mfg) with 70%.
-       - Assign 'I' (Agriculture) with 65%.
-
-    Codes:
-    A: Nursing Care
+    Sector Codes:
+    A: Nursing Care (Kaigo)
     B: Building Cleaning
     C: Construction
     D: Manufacturing
     E: Electronics
     F: Auto Repair
     G: Aviation
-    H: Hotel
+    H: Accommodation/Hotel
     I: Agriculture
     J: Fishery
     K: Food & Bev Mfg
     L: Food Service
 
-    Instructions:
-    - Return ONLY the codes followed by percentage, separated by commas (e.g., "A95,K70").
-    - Do NOT return "UNKNOWN". Make an educated guess based on the logic above.
+    Output Format:
+    - Return ONLY the codes followed by probability percentage based on your search findings.
+    - Separated by commas.
+    - Example: "A95, K80, C70"
+    - If no specific info found online, make an educated guess based on company name keywords and location.
     `;
 
-    const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: "You are an expert Japanese Business Analyst using predictive modeling." },
-        { role: "user", content: prompt }
+    // MENGGUNAKAN ENDPOINT RESPONSES SESUAI INSTRUKSI USER
+    // Cast client ke 'any' untuk bypass pengecekan TypeScript standar
+    const response = await (client as any).responses.create({
+      model: "gpt-4o-mini", 
+      tools: [
+        { type: "web_search" }
       ],
-      temperature: 0.3, // Sedikit kreatif untuk menebak
-      max_tokens: 50,
+      input: prompt, // Menggunakan properti 'input' bukan 'messages'
+      max_tokens: 3000 // Dinaikkan sesuai request
     });
 
-    const resultText = completion.choices[0]?.message?.content?.trim() || "";
+    // Mengambil output_text sesuai snippet Python user
+    const resultText = response.output_text || "";
+    
+    console.log("OpenAI Responses API Result:", resultText);
 
     return res.status(200).json({ result: resultText });
 
