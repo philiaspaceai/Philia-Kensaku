@@ -1,110 +1,23 @@
-import { GoogleGenAI, HarmCategory, HarmBlockThreshold } from "@google/genai";
 import { TSKData } from "../types";
 import { analyzeWithOpenAI } from "./openaiProxy";
-import { logToSupabase } from "./tskService"; // Import Logger
-
-// NOTE: process.env.API_KEY is defined in vite.config.ts
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+import { logToSupabase } from "./tskService"; 
 
 export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
-  const model = "gemini-2.0-flash"; 
-
-  const prompt = `
-    Do deep research and analyze this Japanese Registered Support Organization (TSK).
-    Company Name: ${company.company_name}
-    Address: ${company.address}
-    Reg Number: ${company.reg_number}
-
-    Task: Search Google to research deeply and identify which of these business sectors they handle or recruit for. 
-    Assign a PROBABILITY PERCENTAGE (0-100%) based on the strength of evidence (job postings, website content).
-	You must find and get 10 strong evidence (It could be website that provides the related information, articles, etc.) to increase your accuracy in calculating the percentage.
-
-    Codes:
-    A: Nursing Care / Kaigo
-    B: Building Cleaning
-    C: Construction
-    D: Manufacturing / Factory
-    E: Electronics / Electric
-    F: Automobile Repair
-    G: Aviation
-    H: Accommodation / Hotel
-    I: Agriculture
-    J: Fishery
-    K: Food & Beverage Manufacturing
-    L: Food Service / Restaurant
-
-    Instructions:
-    1. Search for their official website or job postings using the "google_search" tool.
-    2. Return the codes followed immediately by the percentage number (e.g., "A90").
-    3. Return ONLY the codes separated by commas.
-    4. SORT the result by percentage DESCENDING (Highest first).
-    5. If general/unknown, return empty string.
-
-    Example Output: "A95,K88"
-  `;
+  // Direct Bypass to OpenAI Backend (As requested: "jangan pake gemini flash 2.0 dulu")
+  console.log(`[AI SERVICE] Directing to OpenAI Backend for ${company.company_name}...`);
+  await logToSupabase(`[START] Analyzing ${company.company_name} via OpenAI Backend`);
 
   try {
-    // STEP 1: COBA GEMINI (PRIMARY)
-    console.log(`[AI PRIMARY] Mencoba Gemini ${model}...`);
-    // await logToSupabase(`[START GEMINI] ${company.company_name} (${company.reg_number})`);
+    const openAiResult = await analyzeWithOpenAI(company);
+    const parsed = parseTags(openAiResult);
     
-    const response = await ai.models.generateContent({
-      model: model,
-      contents: [
-        {
-          role: 'user',
-          parts: [{ text: prompt }]
-        }
-      ],
-      config: {
-        temperature: 0.1, // Deterministic
-        tools: [{ googleSearch: {} }], // Use Grounding
-        safetySettings: [
-          { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE },
-          { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_NONE },
-          { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_NONE },
-          { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_NONE },
-        ]
-      }
-    });
-
-    // Robust text extraction
-    const text = response.text || 
-                 response.candidates?.[0]?.content?.parts?.[0]?.text || 
-                 "";
-    
-    // Log Gemini Success
-    // await logToSupabase(`[GEMINI SUCCESS] Raw: ${text.substring(0, 50)}...`);
-
-    return parseTags(text);
+    await logToSupabase(`[OPENAI FINISH] Raw: "${openAiResult}" -> Parsed: "${parsed}"`);
+    return parsed;
 
   } catch (error: any) {
-    // STEP 2: FAILOVER KE OPENAI (BACKUP)
-    console.warn("⚠️ [AI PRIMARY FAILED] Gemini bermasalah:", error.message);
-    
-    // LOG KE SUPABASE AGAR BISA DITRACK
-    await logToSupabase(`[FAILOVER START] Gemini Error: ${error.message}. Switching to OpenAI for ${company.company_name}`);
-
-    console.log("🔄 [FAILOVER] Mengalihkan ke OpenAI (GPT-4o-Mini)...");
-    
-    try {
-        const openAiResult = await analyzeWithOpenAI(company);
-        
-        // LOG RAW RESULT DARI OPENAI
-        await logToSupabase(`[OPENAI RAW] ${company.company_name}: "${openAiResult}"`);
-        
-        const parsed = parseTags(openAiResult);
-        
-        // LOG HASIL PARSING
-        await logToSupabase(`[OPENAI PARSED] ${company.company_name}: "${parsed}"`);
-
-        return parsed;
-
-    } catch (backupError: any) {
-        console.error("❌ [SYSTEM FAILURE] Kedua AI gagal.", backupError);
-        await logToSupabase(`[CRITICAL ERROR] OpenAI Failed: ${backupError.message}`);
-        return "";
-    }
+    console.error("❌ [AI SERVICE ERROR]", error);
+    await logToSupabase(`[ERROR] ${error.message}`);
+    return "";
   }
 };
 
@@ -117,7 +30,6 @@ function parseTags(text: string): string {
     
     if (matches && matches.length > 0) {
       // 1. Filter: LOWER THRESHOLD TO 50
-      // Ini penting agar hasil 'tebakan' OpenAI (yang biasanya confidence-nya lebih rendah dari Gemini karena tanpa web) tetap masuk.
       const filteredMatches = matches.filter(tag => {
         const percent = parseInt(tag.substring(1));
         return percent >= 50; 
