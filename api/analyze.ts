@@ -29,50 +29,60 @@ export default async function handler(req: any, res: any) {
 
     const client = new OpenAI({ apiKey });
 
-    // Prompt yang sama kuatnya dengan Gemini
+    // PROMPT BARU: Predictive Profiling
+    // Karena GPT-4o-mini API standar tidak bisa browsing web, kita minta dia menebak berdasarkan pola nama dan lokasi.
     const prompt = `
-    Analyze this Japanese TSK Company.
+    Analyze this Japanese TSK (Registered Support Organization).
     Company Name: ${companyName}
     Address: ${address}
     Reg Number: ${regNumber}
 
-    Task: Identify which of these business sectors they recruit for Tokutei Ginou (SSW) based on your knowledge base.
-    Assign a PROBABILITY PERCENTAGE (0-100%).
+    Task: Predict the likely Tokutei Ginou (SSW) business sectors based on the Company Name Keywords and Location characteristics.
+    
+    Logic for Prediction (Use this priority):
+    1. KEYWORDS:
+       - "Care", "Fukushi", "Kaigo", "Life" -> Assign A (Nursing Care) with 95%.
+       - "Build", "Kensetsu", "Kougyou", "Tech" -> Assign C (Construction) with 90%.
+       - "Farm", "Agri", "Nogyo", "Green" -> Assign I (Agriculture) with 90%.
+       - "Food", "Shokuhin", "Meat", "Deli" -> Assign K (Food Mfg) with 90%.
+       - "Hotel", "Resort", "Inn" -> Assign H (Hotel) with 90%.
+       - "Auto", "Motor", "Seibi" -> Assign F (Auto Repair) with 90%.
+    
+    2. GENERAL INFERENCE (If name is generic like "International", "Support", "Consulting"):
+       - These TSKs typically handle high-demand sectors.
+       - Assign 'A' (Nursing Care) with 75%.
+       - Assign 'K' (Food & Bev Mfg) with 70%.
+       - Assign 'I' (Agriculture) with 65%.
 
     Codes:
-    A: Nursing Care / Kaigo
+    A: Nursing Care
     B: Building Cleaning
     C: Construction
-    D: Manufacturing / Factory
-    E: Electronics / Electric
-    F: Automobile Repair
+    D: Manufacturing
+    E: Electronics
+    F: Auto Repair
     G: Aviation
-    H: Accommodation / Hotel
+    H: Hotel
     I: Agriculture
     J: Fishery
-    K: Food & Beverage Manufacturing
-    L: Food Service / Restaurant
+    K: Food & Bev Mfg
+    L: Food Service
 
     Instructions:
-    1. Return ONLY the codes followed by percentage, separated by commas (e.g., "A95,K88").
-    2. Do NOT add any markdown or explanation.
-    3. If uncertain, return "UNKNOWN".
+    - Return ONLY the codes followed by percentage, separated by commas (e.g., "A95,K70").
+    - Do NOT return "UNKNOWN". Make an educated guess based on the logic above.
     `;
 
-    // FIX: Gunakan standar 'chat.completions.create'
-    // NOTE: gpt-4o-mini standard tidak memiliki akses web_search bawaan tanpa addons. 
-    // Kita gunakan model standard untuk analisa pattern nama/alamat/reputasi.
     const completion = await client.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        { role: "system", content: "You are an expert Japanese Business Analyst." },
+        { role: "system", content: "You are an expert Japanese Business Analyst using predictive modeling." },
         { role: "user", content: prompt }
       ],
-      temperature: 0.1, // Lebih presisi
+      temperature: 0.3, // Sedikit kreatif untuk menebak
       max_tokens: 50,
     });
 
-    // Ambil hasil text standard
     const resultText = completion.choices[0]?.message?.content?.trim() || "";
 
     return res.status(200).json({ result: resultText });

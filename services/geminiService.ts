@@ -116,10 +116,11 @@ function parseTags(text: string): string {
     const matches = text.match(/[A-L]\d{1,3}/g);
     
     if (matches && matches.length > 0) {
-      // 1. Filter: Only keep tags with score >= 85
+      // 1. Filter: LOWER THRESHOLD TO 50
+      // Ini penting agar hasil 'tebakan' OpenAI (yang biasanya confidence-nya lebih rendah dari Gemini karena tanpa web) tetap masuk.
       const filteredMatches = matches.filter(tag => {
         const percent = parseInt(tag.substring(1));
-        return percent >= 85;
+        return percent >= 50; 
       });
 
       if (filteredMatches.length === 0) return "";
