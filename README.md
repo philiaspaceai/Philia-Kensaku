@@ -1,5 +1,5 @@
 # Philia Kensaku 🌸
-> **Final Update: 26 Desember 2025**
+> **Final Update: Februari 2025**
 
 ![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)
 ![Status: Active](https://img.shields.io/badge/Status-Active-success.svg)
@@ -11,22 +11,30 @@ Philia Kensaku adalah inisiatif **Non-Profit** dari komunitas untuk membantu pek
 
 ---
 
-## 🌟 Fitur Utama (Update v2.0)
+## 🌟 Fitur Utama (Update v2.5)
 
-### 1. 🔍 Pencarian Cerdas (Smart Search)
-- **Pencarian Cepat**: Cari berdasarkan nama perusahaan, No. Registrasi, atau wilayah.
-- **Advanced Filter**: Filter berdasarkan **Prefektur**, **Bahasa Indonesia**, dan **Dukungan Legal vs Opsional**.
+### 1. 🔍 Pencarian Cerdas & Peta Interaktif
+- **Visual Map Selector**: Pilih wilayah target Anda menggunakan peta Jepang interaktif untuk visualisasi lokasi yang lebih baik.
+- **Advanced Filter**: Saring TSK berdasarkan **Prefektur**, **Bahasa Indonesia**, dan **Dukungan Legal vs Opsional**.
+- **Smart Sorting**: Urutkan berdasarkan popularitas (Likes) atau tanggal mulai operasi terbaru.
 
-### 2. 🕵️ Detektif TSK (AI Powered)
-Jangan tertipu broker nakal! Gunakan tombol **"Cari Tahu"** yang ditenagai oleh **Super Prompt AI** (Google Gemini) untuk membongkar:
-- Jejak digital & akun sosmed asli perusahaan.
-- Prediksi jenis pekerjaan yang tersedia.
-- Reputasi "Black Company" atau ulasan buruk.
+### 2. 🤖 AI Background Analysis (Auto-Tagging)
+Sistem cerdas yang berjalan di latar belakang untuk menganalisis spesialisasi perusahaan TSK.
+- **Job Probability Score**: AI memindai jejak digital perusahaan dan memberikan skor persentase (Contoh: **Kaigo 95%**, **Pertanian 80%**).
+- **Visual Tags**: Menampilkan label bidang pekerjaan secara otomatis pada kartu perusahaan berdasarkan hasil analisis data.
 
-### 3. 📝 Email Generator Otomatis
-Tidak perlu bingung menulis surat lamaran. Fitur ini membuatkan **Cover Letter** dalam Bahasa Jepang standar bisnis (`Keigo`) secara otomatis. Cukup isi data diri, copy, dan kirim.
+### 3. 🕵️ Protokol Detektif "Strict Mode"
+Fitur **"Cari Tahu"** kini ditenagai oleh *Prompt Engineering* tingkat lanjut yang agresif:
+- **Anti-Halusinasi**: Memaksa mesin pencari untuk menyertakan **LINK BUKTI** valid untuk setiap klaim.
+- **Application Hack**: Instruksi khusus untuk mencari **Email HRD**, **Formulir Kontak Tersembunyi**, dan pintu belakang rekrutmen.
+- **Deep Reputation Check**: Menggali database "Black Kigyou" dan ulasan lokal untuk memastikan keamanan pelamar.
 
-### 4. 📚 Philia Guidebook
+### 4. 📝 Email Generator Otomatis
+Tidak perlu bingung menulis surat lamaran. Fitur ini membuatkan **Cover Letter** dalam Bahasa Jepang standar bisnis (`Keigo`) secara otomatis.
+- **Auto-Format**: Menyesuaikan isi surat berdasarkan sertifikat JLPT/SSW yang Anda miliki.
+- **Professional Template**: Struktur kalimat yang sopan dan disukai HRD Jepang.
+
+### 5. 📚 Philia Guidebook
 Panduan lengkap interaktif di dalam aplikasi yang membahas:
 - Strategi mencari TSK "Kolam Kecil" (Persaingan rendah).
 - Teknik OSINT (Open Source Intelligence) untuk riset perusahaan.

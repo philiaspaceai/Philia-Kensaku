@@ -37,7 +37,6 @@ export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
     3. Return ONLY the codes separated by commas.
     4. SORT the result by percentage DESCENDING (Highest first).
     5. If general/unknown, return empty string.
-    6. EXCLUDE any sector with probability BELOW 85%. STRICT THRESHOLD.
 
     Example Output: "A95,K88"
   `;
