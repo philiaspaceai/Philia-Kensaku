@@ -96,11 +96,13 @@ function App() {
   
   // Handle Cari Tahu (AI Integration)
   const handleCariTahu = (item: TSKData) => {
-      // If tags exist, skip AI and go straight to Google
-      if (item.tags && item.tags.length > 0) {
+      // LOGIC UPDATE:
+      // 1. Jika sudah ada tags -> Langsung Google
+      // 2. Jika tipe kantor adalah "Branch" (Cabang) -> Langsung Google (Skip AI)
+      if ((item.tags && item.tags.length > 0) || item.office_type === 'Branch') {
           executeGoogleSearch(item);
       } else {
-          // Open Hidden Process for Analysis
+          // Open Hidden Process for Analysis (Only for Head Office with no tags)
           setProcessingItem(item);
       }
   };
@@ -120,43 +122,51 @@ function App() {
     const displayName = (isBranch && item.branch_name) ? item.branch_name : item.company_name;
     const displayAddress = (isBranch && item.branch_address) ? item.branch_address : item.address;
 
-    const identity = `No. Registrasi: ${item.reg_number}`;
-    const location = `Alamat: ${displayAddress}`;
-    const ceo = item.representative ? `CEO: ${item.representative}` : '';
+    // NOTE: Keep formatting strict for Google AI Prompt (No indentation for the prompt body)
+    const promptInstructions = `Saya ingin kamu melakukan research dan pencarian di google secara mendalam, mendetail, dan super akurat dengan pencarian berbahasa jepang di google mengenai perusahaan TSK ini:
 
-    const promptInstructions = `
-      Saya ingin kamu melakukan research dan pencarian di google secara mendalam, mendetail, dan super akurat dengan pencarian berbahasa jepang di google mengenai TSK: "${displayName}".
-      Data Validasi untuk memastikan perusahaan yang benar: ${identity}, ${location}, ${ceo}.
+Nama Perusahaan : ${displayName}
+Nomor Registrasi : ${item.reg_number}
+CEO : ${item.representative || '-'}
+Alamat : ${displayAddress}
 
-      ⚠️ PROTOKOL WAJIB (STRICT RULES):
-      1. NO FAKE LINKS: Haram hukumnya memberikan informasi tanpa LINK BUKTI (URL) yang valid dan bisa diklik.
-      2. EVIDENCE FIRST: Setiap klaim harus didukung oleh sumber url (Website resmi, Portal berita, Database pemerintah, atau Sosmed).
+⚠️ PROTOKOL WAJIB (STRICT RULES):
+1. NO FAKE LINKS: Haram hukumnya memberikan informasi tanpa LINK BUKTI (URL) yang valid dan bisa diklik.
+2. EVIDENCE FIRST: Setiap klaim harus didukung oleh sumber url (Website resmi, Portal berita, Database pemerintah, atau Sosmed).
 
-      Jawab 4 Poin Kunci ini secara mendetail dalam Bahasa Indonesia:
+Jawab 4 Poin Kunci ini secara mendetail dalam Bahasa Indonesia:
 
-      1. 🕵️ DIGITAL FOOTPRINT & SOSMED (WAJIB ADA LINK):
-      Temukan akun Instagram, Facebook, LinkedIn, atau Twitter resmi mereka yang terbaru.
-      Format: "Platform: [Nama] - [URL Link]" (Pastikan Link Aktif).
+1. 🕵️ DIGITAL FOOTPRINT & SOSMED (WAJIB ADA LINK):
+Temukan akun Instagram, Facebook (SANGAT WAJIB), LinkedIn, atau Twitter resmi mereka yang terbaru.
+Format: "Platform: [Nama] - [URL Link]" (Pastikan Link Aktif).
 
-      2. 📊 PREDIKSI JOB & PERSENTASE AKURASI:
-      Berdasarkan histori jejak digital (iklan lama/baru), prediksi jenis pekerjaan Tokutei Ginou (SSW) yang tersedia.
-      Format: "Bidang: [Contoh: Kaigo/Pertanian] (Akurasi: [0-100]%)".
-      WAJIB: Sertakan [LINK BUKTI] iklan lowongan atau halaman rekrutmen yang menjadi dasar analisa Anda.
+2. 📊 PREDIKSI JOB & PERSENTASE AKURASI:
+Berdasarkan histori jejak digital (iklan lama/baru), prediksi jenis pekerjaan Tokutei Ginou (SSW) yang tersedia.
+Format: "Bidang: [Contoh: Kaigo/Pertanian] (Akurasi: [0-100]%)".
+WAJIB: Sertakan [LINK BUKTI] iklan lowongan atau halaman rekrutmen yang menjadi dasar analisa Anda.
 
-      3. 🗺️ PETA JALAN MELAMAR (APPLICATION HACK):
-      Analisa struktur website mereka untuk mencari pintu masuk pelamar.
-      SANGAT WAJIB: Temukan dan lampirkan URL khusus menuju "Direct Contact Form" (Formulir Kontak/Inquiry) yang ada di website mereka.
-      Apakah ada Email HRD spesifik? Berikan panduan langkah demi langkah melamar beserta [LINK DIRECT FORM] yang valid.
+3. 🗺️ PETA JALAN MELAMAR (APPLICATION HACK):
+Analisa struktur website mereka untuk mencari pintu masuk pelamar.
+SANGAT WAJIB: WAJIB Temukan EMAIL yang bisa dihubungi dengan cara apapun dan dari sumber manapun dan emailnya wajib 100% valid dan ADA BUKTINYA!
+Temukan dan lampirkan URL khusus menuju "Direct Contact Form" (Formulir Kontak/Inquiry) yang ada di website mereka.
+Berikan panduan langkah demi langkah melamar beserta [LINK DIRECT FORM] yang valid.
 
-      4. 💀 DEEP DIVE FAKTA & REPUTASI:
-      Gali "Underground Info". Cari ulasan Google Maps, artikel berita lokal, atau daftar "Black Kigyou".
-      Apakah perusahaan ini bersih? Atau ada skandal?
-      Sertakan [LINK SUMBER] untuk setiap fakta yang Anda temukan.
-    `.trim().replace(/\s+/g, ' '); 
+4. 💀 DEEP DIVE FAKTA & REPUTASI:
+Gali "Underground Info". Cari ulasan Google Maps, artikel berita lokal, atau daftar "Black Kigyou".
+Apakah perusahaan ini bersih? Atau ada skandal?
+Sertakan [LINK SUMBER] untuk setiap fakta yang Anda temukan.`;
 
-    const url = `https://www.google.com/search?q=${encodeURIComponent(promptInstructions)}&udm=50`;
+    // Custom Encoding to match Google Search URL structure
+    // 1. Encode URI Component (handles special chars)
+    // 2. Replace %20 with + (Spaces)
+    // 3. Replace %0A with %0D%0A (Newlines for Google Text Box)
+    const encodedPrompt = encodeURIComponent(promptInstructions)
+        .replace(/%20/g, '+')
+        .replace(/%0A/g, '%0D%0A');
+
+    const url = `https://www.google.com/search?q=${encodedPrompt}&udm=50`;
     
-    // CHANGED: Open in SAME TAB
+    // Open in SAME TAB
     window.location.href = url;
   };
 

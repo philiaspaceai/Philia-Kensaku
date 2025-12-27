@@ -37,8 +37,9 @@ export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
     3. Return ONLY the codes separated by commas.
     4. SORT the result by percentage DESCENDING (Highest first).
     5. If general/unknown, return empty string.
+    6. EXCLUDE any sector with probability BELOW 85%. STRICT THRESHOLD.
 
-    Example Output: "A95,K80,D50"
+    Example Output: "A95,K88"
   `;
 
   try {
@@ -74,14 +75,22 @@ export const analyzeCompanyTags = async (company: TSKData): Promise<string> => {
     const matches = text.match(/[A-L]\d{1,3}/g);
     
     if (matches && matches.length > 0) {
-      // Manual sorting to be 100% sure (AI sometimes forgets sorting)
-      const sortedTags = matches.sort((a, b) => {
-        const percentA = parseInt(a.substring(1));
-        const percentB = parseInt(b.substring(1));
-        return percentB - percentA; // Descending
+      // 1. Filter: Only keep tags with score >= 85
+      const filteredMatches = matches.filter(tag => {
+        const percent = parseInt(tag.substring(1));
+        return percent >= 85;
       });
 
-      // Remove duplicates and join
+      if (filteredMatches.length === 0) return "";
+
+      // 2. Sort Descending
+      const sortedTags = filteredMatches.sort((a, b) => {
+        const percentA = parseInt(a.substring(1));
+        const percentB = parseInt(b.substring(1));
+        return percentB - percentA; 
+      });
+
+      // 3. Remove duplicates and join
       return [...new Set(sortedTags)].join(",");
     }
     

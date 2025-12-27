@@ -80,8 +80,8 @@ export const TagsModal: React.FC<TagsModalProps> = ({ isOpen, onClose, tagsStrin
              
              {/* Footer */}
              <div className="p-4 bg-slate-50 text-center border-t border-slate-100">
-                <p className="text-[10px] text-slate-400">
-                    *Persentase berdasarkan analisis jejak digital & postingan lowongan kerja.
+                <p className="text-[10px] text-slate-400 leading-relaxed">
+                    *Persentase berdasarkan analisis jejak digital & postingan lowongan kerja dengan menggunakan Gemini AI. Hasilnya tidak akan selalu akurat jadi pastikan anda melakukan research secara pribadi untuk mendapatkan hasil yang lebih akurat.
                 </p>
              </div>
           </motion.div>
