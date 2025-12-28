@@ -1,5 +1,5 @@
 # Philia Kensaku 🌸
-> **Final Update: Februari 2025**
+> **Final Update: 28 Desember 2025**
 
 ![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)
 ![Status: Active](https://img.shields.io/badge/Status-Active-success.svg)
@@ -11,30 +11,30 @@ Philia Kensaku adalah inisiatif **Non-Profit** dari komunitas untuk membantu pek
 
 ---
 
-## 🌟 Fitur Utama (Update v2.5)
+## 🌟 Fitur Utama (Update v3.0 - Winter Edition)
 
 ### 1. 🔍 Pencarian Cerdas & Peta Interaktif
 - **Visual Map Selector**: Pilih wilayah target Anda menggunakan peta Jepang interaktif untuk visualisasi lokasi yang lebih baik.
 - **Advanced Filter**: Saring TSK berdasarkan **Prefektur**, **Bahasa Indonesia**, dan **Dukungan Legal vs Opsional**.
 - **Smart Sorting**: Urutkan berdasarkan popularitas (Likes) atau tanggal mulai operasi terbaru.
 
-### 2. 🤖 AI Background Analysis (High Precision)
-Sistem cerdas yang berjalan di latar belakang untuk menganalisis spesialisasi perusahaan TSK dengan standar akurasi tinggi.
-- **Smart Filtering (>85%)**: Sistem menggunakan *Hybrid Logic* di mana Regex Filter secara otomatis mengeliminasi hasil analisis dengan probabilitas di bawah **85%**. Hanya data dengan tingkat keyakinan tinggi yang ditampilkan.
-- **Job Probability Score**: Memberikan skor spesifik (Contoh: **Kaigo 95%**, **Pertanian 88%**) berdasarkan jejak digital dan postingan rekrutmen perusahaan.
-- **Visual Tags**: Label bidang pekerjaan muncul otomatis pada kartu perusahaan untuk memudahkan identifikasi spesialisasi TSK.
+### 2. 🤖 AI Deep Analysis (Multi-Model Fallback)
+Sistem cerdas yang berjalan di latar belakang ("Hidden Process") untuk menganalisis spesialisasi perusahaan TSK.
+- **Survival Mode Architecture**: Sistem kini menggunakan strategi *Nested Fallback* (3 API Key x 3 Model AI). Jika model utama (Flash 2.5) sibuk, sistem otomatis beralih ke model cadangan (Lite/Flash 3.0) untuk memastikan analisis tetap berjalan 99.9% uptime.
+- **Direct Code Output**: Menggunakan instruksi *Temperature 0.1* yang sangat ketat untuk menghasilkan data deterministik berupa kode sektor (Contoh: **A95**, **K80**).
+- **Job Probability Score**: Memberikan skor spesifik berdasarkan jejak digital. Hanya data dengan tingkat keyakinan **>50%** yang ditampilkan ke pengguna.
 
-### 3. 🕵️ Protokol Detektif "Strict Mode"
-Fitur **"Cari Tahu"** kini ditenagai oleh *Prompt Engineering* tingkat lanjut dengan aturan ketat:
-- **Evidence First**: Mesin pencari diprogram untuk "haram" memberikan informasi tanpa **LINK BUKTI** valid. Setiap klaim harus disertai sumber URL.
-- **Anti-Hallucination**: Meminimalkan informasi palsu dengan mewajibkan verifikasi silang data CEO dan Nomor Registrasi.
-- **Application Hack**: Instruksi khusus untuk mencari **Email HRD**, **Formulir Kontak Tersembunyi**, dan pintu belakang rekrutmen yang sering terlewat oleh pencarian biasa.
+### 3. 🕵️ Protokol Detektif "Google Deep Search"
+Fitur **"Cari Tahu"** yang didesain ulang dengan tampilan *Google Deep Search* palsu untuk pengalaman UI yang mulus.
+- **Evidence First**: Prompt khusus yang memaksa mesin pencari menyertakan **LINK BUKTI** valid untuk setiap klaim.
+- **Anti-Hallucination**: Meminimalkan informasi palsu dengan verifikasi silang data CEO dan Nomor Registrasi.
+- **Application Hack**: Instruksi khusus untuk mencari **Email HRD** dan pintu belakang rekrutmen yang sering terlewat.
 - **Deep Reputation Check**: Menggali database "Black Kigyou" dan ulasan lokal.
 
 ### 4. 📝 Email Generator Otomatis
 Tidak perlu bingung menulis surat lamaran. Fitur ini membuatkan **Cover Letter** dalam Bahasa Jepang standar bisnis (`Keigo`) secara otomatis.
 - **Auto-Format**: Menyesuaikan isi surat berdasarkan sertifikat JLPT/SSW yang Anda miliki.
-- **Professional Template**: Struktur kalimat yang sopan dan disukai HRD Jepang, lengkap dengan placeholder untuk kontak.
+- **Professional Template**: Struktur kalimat yang sopan dan disukai HRD Jepang.
 
 ### 5. 📚 Philia Guidebook
 Panduan lengkap interaktif di dalam aplikasi yang membahas:
@@ -67,7 +67,7 @@ Aplikasi ini dikembangkan dan dikelola oleh:
 
 *   **Komunitas**: Philia Space Community
 *   **Operator AI & Lead Developer**: **Putera Perdana Gemilang Baang**
-*   **Teknologi AI**: Google AI Studio (Gemini Models)
+*   **Teknologi AI**: Google AI Studio (Gemini 2.5 & 3.0 Models)
 *   **Sumber Data**: Kementerian Kehakiman Jepang (Ministry of Justice - MOJ)
 
 > *Saya, Putera Perdana Gemilang Baang, bertanggung jawab penuh atas operasional prompt AI dan kurasi sistem ini. Segala ketidakakuratan data adalah tanggung jawab operator dan bukan afiliasi pihak ketiga.*
