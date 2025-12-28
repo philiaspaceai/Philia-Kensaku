@@ -8,17 +8,20 @@ import { LoadingSpinner } from './components/ui/LoadingSpinner';
 import { AdvancedFilter } from './components/AdvancedFilter';
 import { Guidebook } from './components/Guidebook';
 import { Information } from './components/Information';
+import { TSKAnalytics } from './components/TSKAnalytics';
 import { LocationModal } from './components/modals/LocationModal';
 import { LanguageModal } from './components/modals/LanguageModal';
+import { SelectMenu } from './components/modals/SelectMenu';
 import { HiddenProcess } from './components/HiddenProcess';
 
 function App() {
-  // View State: 'search' | 'guidebook' | 'info'
-  const [view, setView] = useState<'search' | 'guidebook' | 'info'>('search');
+  // View State: 'search' | 'guidebook' | 'info' | 'analytics'
+  const [view, setView] = useState<'search' | 'guidebook' | 'info' | 'analytics'>('search');
 
   // Modal States
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
+  const [isSelectMenuOpen, setIsSelectMenuOpen] = useState(false);
   
   // AI Process State
   const [processingItem, setProcessingItem] = useState<TSKData | null>(null);
@@ -93,6 +96,15 @@ function App() {
   const handleLanguageSave = (included: string[], excluded: string[]) => {
     setFilters({ ...filters, languages: included, excludedLanguages: excluded });
   };
+
+  const handleSelectMenuOption = (option: 'analytics' | 'info' | 'donate') => {
+    setIsSelectMenuOpen(false);
+    if (option === 'donate') {
+        window.open('https://trakteer.id/philiaanimelist/tip', '_blank');
+    } else {
+        setView(option);
+    }
+  };
   
   // Handle Cari Tahu (AI Integration)
   const handleCariTahu = (item: TSKData) => {
@@ -156,10 +168,6 @@ Gali "Underground Info". Cari ulasan Google Maps, artikel berita lokal, atau daf
 Apakah perusahaan ini bersih? Atau ada skandal?
 Sertakan [LINK SUMBER] untuk setiap fakta yang Anda temukan.`;
 
-    // Custom Encoding to match Google Search URL structure
-    // 1. Encode URI Component (handles special chars)
-    // 2. Replace %20 with + (Spaces)
-    // 3. Replace %0A with %0D%0A (Newlines for Google Text Box)
     const encodedPrompt = encodeURIComponent(promptInstructions)
         .replace(/%20/g, '+')
         .replace(/%0A/g, '%0D%0A');
@@ -187,10 +195,10 @@ Sertakan [LINK SUMBER] untuk setiap fakta yang Anda temukan.`;
          <div className="absolute top-0 right-0 w-64 h-64 bg-primary-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-60"></div>
          <div className="absolute top-0 left-0 w-64 h-64 bg-sakura-50 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2 opacity-60"></div>
         
-         {/* Info Button (Top Left) */}
+         {/* Info Button (Top Left) - NOW OPENS SELECT MENU */}
          <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-20">
             <button
-              onClick={() => setView('info')}
+              onClick={() => setIsSelectMenuOpen(true)}
               className="flex items-center gap-2 bg-white/80 backdrop-blur-md border border-slate-200 text-slate-700 px-3 py-2 rounded-full font-bold shadow-sm hover:bg-white hover:shadow-md hover:text-primary-600 transition-all group"
             >
                <Info className="w-5 h-5 text-slate-500 group-hover:text-primary-500 transition-colors" />
@@ -413,7 +421,7 @@ Sertakan [LINK SUMBER] untuk setiap fakta yang Anda temukan.`;
              >
                 <Guidebook onBack={() => setView('search')} />
              </motion.div>
-          ) : (
+          ) : view === 'info' ? (
              <motion.div
                 key="info"
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -423,6 +431,17 @@ Sertakan [LINK SUMBER] untuk setiap fakta yang Anda temukan.`;
                 className="flex flex-col min-h-screen w-full"
              >
                 <Information onBack={() => setView('search')} />
+             </motion.div>
+          ) : (
+             <motion.div
+                key="analytics"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col min-h-screen w-full"
+             >
+                <TSKAnalytics onBack={() => setView('search')} onGoToTSK={(id) => console.log(id)} />
              </motion.div>
           )}
        </AnimatePresence>
@@ -452,6 +471,12 @@ Sertakan [LINK SUMBER] untuk setiap fakta yang Anda temukan.`;
             selectedLanguages={filters.languages}
             excludedLanguages={filters.excludedLanguages}
             onSave={handleLanguageSave}
+        />
+
+        <SelectMenu 
+            isOpen={isSelectMenuOpen}
+            onClose={() => setIsSelectMenuOpen(false)}
+            onSelectOption={handleSelectMenuOption}
         />
     </div>
   );

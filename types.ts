@@ -32,3 +32,33 @@ export interface SearchFilters {
 }
 
 export type SearchMode = 'simple' | 'advanced';
+
+// Matches 'leaderboard_data' table in Supabase
+export interface LeaderboardRow {
+  id: number;
+  prefecture: string;
+  total_tsk: number;
+  total_tags_analyzed: number;
+  ssw_a: number;
+  ssw_b: number;
+  ssw_c: number;
+  ssw_d: number;
+  ssw_e: number;
+  ssw_f: number;
+  ssw_g: number;
+  ssw_h: number;
+  ssw_i: number;
+  ssw_j: number;
+  ssw_k: number;
+  ssw_l: number;
+}
+
+export interface AnalyticsData {
+  overview: {
+    totalTSK: number;
+    analyzedTSK: number;
+  };
+  leaderboardRows: LeaderboardRow[];
+  topLikedTSK: TSKData[];
+  lastUpdated: number;
+}

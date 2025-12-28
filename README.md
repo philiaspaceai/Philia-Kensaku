@@ -11,36 +11,34 @@ Philia Kensaku adalah inisiatif **Non-Profit** dari komunitas untuk membantu pek
 
 ---
 
-## 🌟 Fitur Utama (Update v3.0 - Winter Edition)
+## 🌟 Fitur Utama (Update v3.1 - End of Year Update)
 
-### 1. 🔍 Pencarian Cerdas & Peta Interaktif
-- **Visual Map Selector**: Pilih wilayah target Anda menggunakan peta Jepang interaktif untuk visualisasi lokasi yang lebih baik.
-- **Advanced Filter**: Saring TSK berdasarkan **Prefektur**, **Bahasa Indonesia**, dan **Dukungan Legal vs Opsional**.
-- **Smart Sorting**: Urutkan berdasarkan popularitas (Likes) atau tanggal mulai operasi terbaru.
+### 1. 📊 Data Center TSK (Analytics v2.0)
+Pusat data statistik yang telah dirombak total menggunakan **Server-Side Aggregation** untuk performa kilat.
+- **Sector Heatmap**: Visualisasi peta Jepang yang dinamis. Peta dapat berubah warna sesuai konsentrasi industri (Misal: Pilih "Kaigo" -> Peta berubah Pink dan menyorot wilayah dengan populasi TSK Kaigo terbanyak).
+- **Regional Spotlight**: Klik prefektur manapun untuk melihat **"Rapor Wilayah"** yang menampilkan Top 3 Industri dominan di daerah tersebut.
+- **Transparency Protocol**: Dilengkapi dengan *Smart Disclaimer* otomatis untuk mengedukasi pengguna bahwa data yang ditampilkan adalah **Jumlah TSK**, bukan jumlah lowongan, demi mencegah misinformasi.
 
-### 2. 🤖 AI Deep Analysis (Multi-Model Fallback)
+### 2. 🔍 Pencarian Cerdas & Filter Presisi
+- **Advanced Filter**: Saring ribuan TSK berdasarkan **Prefektur**, **Bahasa Indonesia**, dan **Dukungan Legal vs Opsional**.
+- **Smart Sorting**: Urutkan berdasarkan popularitas (Likes) atau tanggal mulai operasi terbaru untuk menemukan TSK yang paling aktif.
+
+### 3. 🤖 AI Deep Analysis (Multi-Model Fallback)
 Sistem cerdas yang berjalan di latar belakang ("Hidden Process") untuk menganalisis spesialisasi perusahaan TSK.
 - **Survival Mode Architecture**: Sistem kini menggunakan strategi *Nested Fallback* (3 API Key x 3 Model AI). Jika model utama (Flash 2.5) sibuk, sistem otomatis beralih ke model cadangan (Lite/Flash 3.0) untuk memastikan analisis tetap berjalan 99.9% uptime.
 - **Direct Code Output**: Menggunakan instruksi *Temperature 0.1* yang sangat ketat untuk menghasilkan data deterministik berupa kode sektor (Contoh: **A95**, **K80**).
 - **Job Probability Score**: Memberikan skor spesifik berdasarkan jejak digital. Hanya data dengan tingkat keyakinan **>50%** yang ditampilkan ke pengguna.
 
-### 3. 🕵️ Protokol Detektif "Google Deep Search"
+### 4. 🕵️ Protokol Detektif "Google Deep Search"
 Fitur **"Cari Tahu"** yang didesain ulang dengan tampilan *Google Deep Search* palsu untuk pengalaman UI yang mulus.
 - **Evidence First**: Prompt khusus yang memaksa mesin pencari menyertakan **LINK BUKTI** valid untuk setiap klaim.
 - **Anti-Hallucination**: Meminimalkan informasi palsu dengan verifikasi silang data CEO dan Nomor Registrasi.
 - **Application Hack**: Instruksi khusus untuk mencari **Email HRD** dan pintu belakang rekrutmen yang sering terlewat.
-- **Deep Reputation Check**: Menggali database "Black Kigyou" dan ulasan lokal.
 
-### 4. 📝 Email Generator Otomatis
+### 5. 📝 Email Generator Otomatis
 Tidak perlu bingung menulis surat lamaran. Fitur ini membuatkan **Cover Letter** dalam Bahasa Jepang standar bisnis (`Keigo`) secara otomatis.
 - **Auto-Format**: Menyesuaikan isi surat berdasarkan sertifikat JLPT/SSW yang Anda miliki.
 - **Professional Template**: Struktur kalimat yang sopan dan disukai HRD Jepang.
-
-### 5. 📚 Philia Guidebook
-Panduan lengkap interaktif di dalam aplikasi yang membahas:
-- Strategi mencari TSK "Kolam Kecil" (Persaingan rendah).
-- Teknik OSINT (Open Source Intelligence) untuk riset perusahaan.
-- Peta krisis tenaga kerja di Jepang & strategi "Golden Hour".
 
 ---
 
