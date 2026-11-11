@@ -6,12 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "data": "node scripts/build-data.mjs ../tsk",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@google/genai": "*",
-    "@supabase/supabase-js": "^2.39.0",
     "framer-motion": "^11.0.0",
     "lucide-react": "^0.469.0",
     "react": "^18.3.1",

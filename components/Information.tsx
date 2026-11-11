@@ -1,19 +1,14 @@
 
-import React, { useEffect, useState } from 'react';
-import { ArrowLeft, Database, ExternalLink, ShieldAlert, Heart, Cpu, FileText, Scale, Globe, UserCheck, Copyright } from 'lucide-react';
-import { fetchTotalCount } from '../services/tskService';
+import React from 'react';
+import { ArrowLeft, Database, ExternalLink, ShieldAlert, Heart, Cpu, Scale, Globe, UserCheck, Copyright } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface InformationProps {
   onBack: () => void;
+  totalCount: number | null;
 }
 
-export const Information: React.FC<InformationProps> = ({ onBack }) => {
-  const [totalCount, setTotalCount] = useState<number | null>(null);
-
-  useEffect(() => {
-    fetchTotalCount().then(setTotalCount);
-  }, []);
+export const Information: React.FC<InformationProps> = ({ onBack, totalCount }) => {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans pb-20">
@@ -132,17 +127,18 @@ export const Information: React.FC<InformationProps> = ({ onBack }) => {
                 
                 <div className="space-y-4 flex-grow">
                     <div className="flex items-center gap-3">
-                         {/* Fake Logo for Google AI Studio */}
                          <div className="w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center text-white font-bold shrink-0">
-                            AI
+                            {"{}"}
                          </div>
                          <div>
-                            <p className="font-bold text-slate-800">Google AI Studio</p>
-                            <p className="text-xs text-slate-500">Gemini Models</p>
+                            <p className="font-bold text-slate-800">Data Statis</p>
+                            <p className="text-xs text-slate-500">Snapshot JSON di repo</p>
                          </div>
                     </div>
                     <p className="text-sm text-slate-600 leading-relaxed">
-                        Aplikasi ini menggunakan teknologi AI terbaru dari Google untuk membantu menganalisis data, memberikan rekomendasi strategi, dan menghasilkan konten bantuan (seperti email lamaran).
+                        Seluruh data TSK dikirim sebagai satu berkas JSON dan diproses di perangkat Anda, tanpa server
+                        perantara. Spesialisasi bidang diisi dari riset manual per organisasi, bukan hasil analisis AI
+                        otomatis — sehingga setiap label bisa ditelusuri bukti risetnya.
                     </p>
                 </div>
             </motion.div>

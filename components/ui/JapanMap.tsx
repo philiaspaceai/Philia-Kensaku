@@ -18,8 +18,8 @@ export const JapanMap: React.FC<JapanMapProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  // URL SVG BARU
-  const SVG_URL = "https://xxnsvylzzkgcnubaegyv.supabase.co/storage/v1/object/public/1/japan.svg";
+  // SVG disimpan di repo (public/japan.svg) — tidak lagi bergantung layanan luar.
+  const SVG_URL = `${import.meta.env.BASE_URL}japan.svg`;
 
   // 1. FETCH & CLEAN SVG
   useEffect(() => {

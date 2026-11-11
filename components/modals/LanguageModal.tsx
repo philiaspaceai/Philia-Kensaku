@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, Trash2, Languages, Ban, RotateCcw } from 'lucide-react';
-import { LANGUAGES } from '../../constants';
+import { X, Check, Languages, Ban, RotateCcw } from 'lucide-react';
+import { LanguageOption } from '../../types';
 
 interface LanguageModalProps {
   isOpen: boolean;
@@ -10,6 +10,8 @@ interface LanguageModalProps {
   selectedLanguages: string[];
   excludedLanguages?: string[];
   onSave: (included: string[], excluded: string[]) => void;
+  /** Daftar bahasa diturunkan dari data master (manifest), bukan daftar tetap. */
+  languages: LanguageOption[];
 }
 
 export const LanguageModal: React.FC<LanguageModalProps> = ({ 
@@ -17,7 +19,8 @@ export const LanguageModal: React.FC<LanguageModalProps> = ({
   onClose, 
   selectedLanguages, 
   excludedLanguages = [], 
-  onSave 
+  onSave,
+  languages,
 }) => {
   // State sets
   const [included, setIncluded] = useState<string[]>([]);
@@ -117,7 +120,8 @@ export const LanguageModal: React.FC<LanguageModalProps> = ({
             {/* List Body */}
             <div className="flex-1 overflow-y-auto custom-scrollbar p-6 bg-white">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {LANGUAGES.map(lang => {
+                    {languages.map((option) => {
+                        const lang = option.name;
                         const isIncluded = included.includes(lang);
                         const isExcluded = excluded.includes(lang);
                         
@@ -147,6 +151,7 @@ export const LanguageModal: React.FC<LanguageModalProps> = ({
                                 <span className="flex items-center gap-2">
                                     <span className={`w-2 h-2 rounded-full ${indicatorClass}`}></span>
                                     {lang}
+                                    <span className="text-[10px] font-normal text-slate-400">{option.count}</span>
                                 </span>
                                 {icon}
                             </button>

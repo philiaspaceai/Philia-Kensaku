@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, Copy, Check, AlertCircle, FileText, Send, Briefcase, GraduationCap, Globe, User, MapPin, Phone, MessageCircle, AlertTriangle } from 'lucide-react';
+import { X, Mail, Copy, Check, AlertCircle, FileText, Briefcase, GraduationCap, Globe, User, MapPin, Phone, MessageCircle, AlertTriangle } from 'lucide-react';
 import { SSW_FIELDS, JAPANESE_LEVELS, SSW_SPECIFIC_JOBS } from '../../constants';
 
 interface EmailGeneratorModalProps {
@@ -35,14 +35,23 @@ export const EmailGeneratorModal: React.FC<EmailGeneratorModalProps> = ({ isOpen
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Reset desired job when SSW Field changes
+  // Reset pekerjaan saat bidang berubah. Bidang yang belum punya daftar
+  // pekerjaan spesifik langsung memakai input manual (desiredJob = 'OTHER').
   useEffect(() => {
-    setFormData(prev => ({ ...prev, desiredJob: '', manualJobInput: '' }));
+    const hasJobList = (SSW_SPECIFIC_JOBS[formData.sswFieldId] ?? []).length > 0;
+    setFormData(prev => ({
+      ...prev,
+      desiredJob: prev.sswFieldId ? (hasJobList ? '' : 'OTHER') : '',
+      manualJobInput: '',
+    }));
   }, [formData.sswFieldId]);
 
-  // Clean Company Name Logic
+  // Bersihkan nama perusahaan: buang awalan 株式会社 dan akhiran badan hukum,
+  // supaya template tidak pernah menghasilkan "株式会社株式会社…".
   const cleanCompanyName = (name: string) => {
-    return name.replace(/(\s+(Company\s+Limited|Co\.,\s*Ltd\.?|Ltd\.?|Inc\.?|K\.K\.?|Corp\.?|Corporation))\s*$/i, '');
+    return name
+      .replace(/^株式会社\s*/, '')
+      .replace(/(\s+(Company\s+Limited|Co\.,\s*Ltd\.?|Ltd\.?|Inc\.?|K\.K\.?|Corp\.?|Corporation))\s*$/i, '');
   };
 
   // Validation Logic
@@ -133,6 +142,12 @@ export const EmailGeneratorModal: React.FC<EmailGeneratorModalProps> = ({ isOpen
     // Determine Final Job Title
     const finalJobTitle = formData.desiredJob === 'OTHER' ? formData.manualJobInput : formData.desiredJob;
 
+    // Baris sertifikat hanya dicetak kalau nama ujiannya diketahui — jangan
+    // mencetak label kosong untuk bidang yang belum punya nama ujian.
+    const certLine = sswCert?.jp_exam
+      ? `資格：${sswCert.jp_exam}（${formatDateJP(formData.sswCertDate)} 合格）\n`
+      : '';
+
     return `株式会社${cleanedCompany}
 採用ご担当者様
 
@@ -142,8 +157,7 @@ ${formData.country}国籍の${formData.nicknameKana}と申します。
 特定技能「${sswField?.jp_field || ''}」で就職先を探しております。${experienceText}でも応募可能な求人をご紹介いただくことは可能でしょうか。
 
 日本語力：${jlpt?.jp || ''}（${formatDateJP(formData.jlptDate)} 合格）
-資格：${sswCert?.jp_exam || ''}（${formatDateJP(formData.sswCertDate)} 合格）
-希望職種：${finalJobTitle}
+${certLine}希望職種：${finalJobTitle}
 
 体を動かす仕事や、
 シフト勤務は問題ありません。
@@ -376,7 +390,7 @@ ${formData.country}国籍の${formData.nicknameKana}と申します。
                                     className={inputClass(!!errors.sswCertId)}
                                 >
                                     <option value="">-- Pilih Ujian Lulus --</option>
-                                    {SSW_FIELDS.map(f => (
+                                    {SSW_FIELDS.filter(f => f.jp_exam).map(f => (
                                     <option key={f.id} value={f.id}>{f.label}</option>
                                     ))}
                                 </select>

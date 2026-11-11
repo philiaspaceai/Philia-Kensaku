@@ -1,9 +1,9 @@
 # Philia Kensaku 🌸
-> **Final Update: 28 Desember 2025**
+> **Migrasi data: 11 November 2026**
 
 ![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)
 ![Status: Active](https://img.shields.io/badge/Status-Active-success.svg)
-![Powered By: Google AI](https://img.shields.io/badge/Powered%20By-Google%20AI%20Studio-blue.svg)
+![Data: Static JSON](https://img.shields.io/badge/Data-Static%20JSON-blue.svg)
 
 **Platform Pencarian TSK (Registered Support Organizations) & Strategi Karir untuk Tokutei Ginou Indonesia.**
 
@@ -11,34 +11,71 @@ Philia Kensaku adalah inisiatif **Non-Profit** dari komunitas untuk membantu pek
 
 ---
 
-## 🌟 Fitur Utama (Update v3.1 - End of Year Update)
+## 🌟 Fitur Utama
 
-### 1. 📊 Data Center TSK (Analytics v2.0)
-Pusat data statistik yang telah dirombak total menggunakan **Server-Side Aggregation** untuk performa kilat.
-- **Sector Heatmap**: Visualisasi peta Jepang yang dinamis. Peta dapat berubah warna sesuai konsentrasi industri (Misal: Pilih "Kaigo" -> Peta berubah Pink dan menyorot wilayah dengan populasi TSK Kaigo terbanyak).
-- **Regional Spotlight**: Klik prefektur manapun untuk melihat **"Rapor Wilayah"** yang menampilkan Top 3 Industri dominan di daerah tersebut.
-- **Transparency Protocol**: Dilengkapi dengan *Smart Disclaimer* otomatis untuk mengedukasi pengguna bahwa data yang ditampilkan adalah **Jumlah TSK**, bukan jumlah lowongan, demi mencegah misinformasi.
+### 1. 📊 Data Center TSK
+Pusat data statistik yang dihitung langsung di perangkat pengunjung dari snapshot data resmi.
+- **Sector Heatmap**: Visualisasi peta Jepang yang dinamis per bidang SSW (19 bidang).
+- **Regional Spotlight**: Klik prefektur manapun untuk melihat **"Rapor Wilayah"** berisi Top 3 Industri dominan.
+- **Transparency Protocol**: Dilengkapi *Smart Disclaimer* otomatis untuk mengedukasi pengguna bahwa data yang ditampilkan adalah **Jumlah TSK**, bukan jumlah lowongan.
 
 ### 2. 🔍 Pencarian Cerdas & Filter Presisi
-- **Advanced Filter**: Saring ribuan TSK berdasarkan **Prefektur**, **Bahasa Indonesia**, dan **Dukungan Legal vs Opsional**.
-- **Smart Sorting**: Urutkan berdasarkan popularitas (Likes) atau tanggal mulai operasi terbaru untuk menemukan TSK yang paling aktif.
+- **Advanced Filter**: Saring TSK berdasarkan **Prefektur**, **Bahasa**, dan **Dukungan Legal vs Opsional**.
+- **Smart Sorting**: Urutkan berdasarkan tanggal mulai operasi (terbaru/terlama).
+- Seluruh pencarian berjalan di browser — tidak ada permintaan jaringan per pencarian.
 
-### 3. 🤖 AI Deep Analysis (Multi-Model Fallback)
-Sistem cerdas yang berjalan di latar belakang ("Hidden Process") untuk menganalisis spesialisasi perusahaan TSK.
-- **Survival Mode Architecture**: Sistem kini menggunakan strategi *Nested Fallback* (3 API Key x 3 Model AI). Jika model utama (Flash 2.5) sibuk, sistem otomatis beralih ke model cadangan (Lite/Flash 3.0) untuk memastikan analisis tetap berjalan 99.9% uptime.
-- **Direct Code Output**: Menggunakan instruksi *Temperature 0.1* yang sangat ketat untuk menghasilkan data deterministik berupa kode sektor (Contoh: **A95**, **K80**).
-- **Job Probability Score**: Memberikan skor spesifik berdasarkan jejak digital. Hanya data dengan tingkat keyakinan **>50%** yang ditampilkan ke pengguna.
+### 3. 🏷️ Label Bidang Hasil Riset
+Setiap organisasi yang sudah diriset diberi label bidang SSW beserta tingkat keyakinan
+(**Tinggi** / **Sedang**). Label berasal dari riset OSINT manual per organisasi, bukan analisis AI otomatis,
+sehingga setiap label punya jejak bukti yang bisa ditelusuri.
 
 ### 4. 🕵️ Protokol Detektif "Google Deep Search"
-Fitur **"Cari Tahu"** yang didesain ulang dengan tampilan *Google Deep Search* palsu untuk pengalaman UI yang mulus.
-- **Evidence First**: Prompt khusus yang memaksa mesin pencari menyertakan **LINK BUKTI** valid untuk setiap klaim.
-- **Anti-Hallucination**: Meminimalkan informasi palsu dengan verifikasi silang data CEO dan Nomor Registrasi.
-- **Application Hack**: Instruksi khusus untuk mencari **Email HRD** dan pintu belakang rekrutmen yang sering terlewat.
+Fitur **"Cari tahu"** membuka pencarian Google dengan prompt riset yang menekankan **LINK BUKTI** untuk setiap klaim,
+pencarian email HRD, dan penelusuran reputasi perusahaan.
 
 ### 5. 📝 Email Generator Otomatis
-Tidak perlu bingung menulis surat lamaran. Fitur ini membuatkan **Cover Letter** dalam Bahasa Jepang standar bisnis (`Keigo`) secara otomatis.
-- **Auto-Format**: Menyesuaikan isi surat berdasarkan sertifikat JLPT/SSW yang Anda miliki.
-- **Professional Template**: Struktur kalimat yang sopan dan disukai HRD Jepang.
+Membuat **Cover Letter** Bahasa Jepang standar bisnis (`Keigo`) secara otomatis, menyesuaikan bidang SSW,
+sertifikat JLPT/SSW, dan pengalaman kerja.
+
+---
+
+## 🏗️ Cara Kerja Data
+
+Tidak ada database dan tidak ada API key di dalam aplikasi. Saat dibuka:
+
+1. Browser mengunduh `public/data/manifest.json` (±1,5 KB) dan `public/data/tsk.json` (±1 MB terkompresi).
+2. Semua pencarian, filter, pengurutan, dan statistik dihitung di browser.
+
+### Sumber & turunan
+
+| Berkas | Peran |
+|---|---|
+| `tsk.json` (master) | 1 baris per kantor (pusat + cabang), data resmi |
+| `ssw_labels.json` (master) | label bidang SSW per nomor registrasi |
+| `index.json` (master) | definisi 19 bidang SSW |
+| `scripts/build-data.mjs` | mengubah master → format aplikasi |
+| `public/data/tsk.json` | hasil build, dipakai aplikasi |
+| `public/data/manifest.json` | metadata, jumlah, daftar bahasa |
+
+### Cara memperbarui data
+
+```bash
+# 1. Taruh master terbaru di folder ../tsk (tsk.json, ssw_labels.json, index.json)
+# 2. Bangun ulang berkas aplikasi
+npm run data
+
+# 3. Cek hasilnya
+npm run typecheck && npm run build
+
+# 4. Commit + deploy seperti biasa
+```
+
+Aturan yang dipakai saat build:
+- Label bidang diambil dari `ssw_labels.json` lewat pencocokan `registration_number`.
+- **Statistik sektor hanya menghitung baris `office_type = "Main"`** — cabang berbagi label dengan
+  kantor pusat, jadi kalau ikut dihitung angkanya membengkak.
+- Prefektur ditentukan dari teks alamat kantor. Baris yang tidak bisa dipastikan dibiarkan `null`
+  dan ditampilkan terpisah, bukan ditebak.
 
 ---
 
@@ -64,11 +101,10 @@ Proyek ini dilisensikan di bawah **Creative Commons Attribution-NonCommercial-Sh
 Aplikasi ini dikembangkan dan dikelola oleh:
 
 *   **Komunitas**: Philia Space Community
-*   **Operator AI & Lead Developer**: **Putera Perdana Gemilang Baang**
-*   **Teknologi AI**: Google AI Studio (Gemini 2.5 & 3.0 Models)
+*   **Operator & Lead Developer**: **Putera Perdana Gemilang Baang**
 *   **Sumber Data**: Kementerian Kehakiman Jepang (Ministry of Justice - MOJ)
 
-> *Saya, Putera Perdana Gemilang Baang, bertanggung jawab penuh atas operasional prompt AI dan kurasi sistem ini. Segala ketidakakuratan data adalah tanggung jawab operator dan bukan afiliasi pihak ketiga.*
+> *Saya, Putera Perdana Gemilang Baang, bertanggung jawab penuh atas operasional, kurasi data, dan pemeliharaan sistem ini. Segala ketidakakuratan data adalah tanggung jawab operator dan bukan afiliasi pihak ketiga.*
 
 ---
 
@@ -79,7 +115,7 @@ Aplikasi ini adalah **Alat Bantu Riset (Research Tool)**.
 - Philia Kensaku **BUKAN** perwakilan pemerintah Indonesia maupun Jepang.
 - Kami **TIDAK** memungut biaya sepeserpun.
 
-Keputusan akhir untuk menandatangani kontrak kerja adalah tanggung jawab penuh pengguna. Selalu lakukan verifikasi mandiri (*Double Check*) sebelum mengambil keputusan karir.
+Data disajikan sebagai snapshot dan dapat berbeda dengan publikasi resmi terbaru. Selalu lakukan verifikasi mandiri (*Double Check*) sebelum mengambil keputusan karir.
 
 ---
 
@@ -87,13 +123,17 @@ Keputusan akhir untuk menandatangani kontrak kerja adalah tanggung jawab penuh p
 
 ```bash
 # 1. Clone Repo
-git clone https://github.com/username/philia-kensaku.git
+git clone https://github.com/philiaspaceai/Philia-Kensaku.git
+cd Philia-Kensaku
 
 # 2. Install Dependencies
 npm install
 
 # 3. Jalankan Mode Dev
 npm run dev
+
+# 4. (Opsional) Bangun ulang data dari master
+npm run data
 ```
 
 _Dibuat dengan ❤️ untuk Pejuang Devisa Indonesia._

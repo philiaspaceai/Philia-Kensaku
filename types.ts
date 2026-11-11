@@ -1,64 +1,75 @@
+// Tipe data aplikasi. Bentuk record mengikuti output scripts/build-data.mjs.
 
-export interface TSKData {
-  id: number;
-  office_type: string;
+export type ConfidenceLevel = 'high' | 'medium' | 'low';
+
+export interface SSWField {
+  id: string;
+  level: ConfidenceLevel | string;
+}
+
+export interface TSKRecord {
   reg_number: string;
-  reg_date: string;
-  company_name: string;
-  zipcode: string;
-  address: string;
-  phone: string;
-  representative: string;
-  branch_name: string | null;
-  branch_zipcode: string | null;
-  branch_address: string | null;
-  support_legal: string; // "Yes" | "No"
-  support_optional: string; // "Yes" | "No"
+  office_seq: number;
+  office_type: 'Main' | 'Branch';
+  name: string;
+  hq_name: string | null;
+  zipcode: string | null;
+  address: string | null;
+  prefecture: string | null;
+  phone: string | null;
+  representative: string | null;
+  reg_date: string | null;
+  support_legal: boolean | null;
+  support_optional: boolean | null;
   support_start_date: string | null;
-  language: string | null;
-  note: string | null;
-  total_likes: number; // New field for like count
-  tags: string | null; // New field for AI Tags (Comma separated codes like "A,B,K")
+  languages: string[];
+  ssw_fields: SSWField[];
+}
+
+export interface LanguageOption {
+  name: string;
+  count: number;
+}
+
+export interface Manifest {
+  generated_at: string;
+  source_updated_at: string;
+  total_rows: number;
+  total_organizations: number;
+  branches: number;
+  labeled_organizations: number;
+  prefecture_unknown: number;
+  ssw_fields: { id: string; name_ja: string; name_id: string }[];
+  languages: LanguageOption[];
 }
 
 export interface SearchFilters {
   query: string;
   prefectures: string[];
   languages: string[];
-  excludedLanguages: string[]; // New field for exclusion
-  dateSort: 'newest' | 'oldest' | null; // New field for date sorting
+  excludedLanguages: string[];
+  dateSort: 'newest' | 'oldest' | null;
   supportLegal: boolean;
   supportOptional: boolean;
 }
 
 export type SearchMode = 'simple' | 'advanced';
 
-// Matches 'leaderboard_data' table in Supabase
-export interface LeaderboardRow {
-  id: number;
+export interface PrefectureStat {
   prefecture: string;
   total_tsk: number;
   total_tags_analyzed: number;
-  ssw_a: number;
-  ssw_b: number;
-  ssw_c: number;
-  ssw_d: number;
-  ssw_e: number;
-  ssw_f: number;
-  ssw_g: number;
-  ssw_h: number;
-  ssw_i: number;
-  ssw_j: number;
-  ssw_k: number;
-  ssw_l: number;
+  ssw: Record<string, number>;
 }
 
 export interface AnalyticsData {
   overview: {
     totalTSK: number;
-    analyzedTSK: number;
+    labeledTSK: number;
+    totalRows: number;
+    prefectureUnknown: number;
   };
-  leaderboardRows: LeaderboardRow[];
-  topLikedTSK: TSKData[];
-  lastUpdated: number;
+  leaderboardRows: PrefectureStat[];
+  national: { id: string; count: number }[];
+  snapshotDate: string;
 }

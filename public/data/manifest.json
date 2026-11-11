@@ -1,0 +1,400 @@
+{
+  "generated_at": "2026-11-11",
+  "source_updated_at": "2026-11-07",
+  "total_rows": 12958,
+  "total_organizations": 11758,
+  "branches": 1200,
+  "labeled_organizations": 831,
+  "prefecture_unknown": 336,
+  "ssw_fields": [
+    {
+      "id": "kaigo",
+      "name_ja": "介護",
+      "name_id": "Perawatan lansia"
+    },
+    {
+      "id": "building-cleaning",
+      "name_ja": "ビルクリーニング",
+      "name_id": "Pembersihan gedung"
+    },
+    {
+      "id": "linen-supply",
+      "name_ja": "リネンサプライ",
+      "name_id": "Linen & laundry industri"
+    },
+    {
+      "id": "manufacturing",
+      "name_ja": "工業製品製造業",
+      "name_id": "Manufaktur produk industri"
+    },
+    {
+      "id": "construction",
+      "name_ja": "建設",
+      "name_id": "Konstruksi"
+    },
+    {
+      "id": "shipbuilding",
+      "name_ja": "造船・舶用工業",
+      "name_id": "Galangan kapal & industri kelautan"
+    },
+    {
+      "id": "auto-repair",
+      "name_ja": "自動車整備",
+      "name_id": "Perawatan & servis mobil"
+    },
+    {
+      "id": "aviation",
+      "name_ja": "航空",
+      "name_id": "Penerbangan"
+    },
+    {
+      "id": "accommodation",
+      "name_ja": "宿泊",
+      "name_id": "Perhotelan"
+    },
+    {
+      "id": "road-transport",
+      "name_ja": "自動車運送業",
+      "name_id": "Transportasi darat"
+    },
+    {
+      "id": "railway",
+      "name_ja": "鉄道",
+      "name_id": "Perkeretaapian"
+    },
+    {
+      "id": "warehousing",
+      "name_ja": "物流倉庫",
+      "name_id": "Pergudangan & logistik"
+    },
+    {
+      "id": "agriculture",
+      "name_ja": "農業",
+      "name_id": "Pertanian"
+    },
+    {
+      "id": "fishery",
+      "name_ja": "漁業",
+      "name_id": "Perikanan"
+    },
+    {
+      "id": "food-manufacturing",
+      "name_ja": "飲食料品製造業",
+      "name_id": "Industri makanan & minuman"
+    },
+    {
+      "id": "food-service",
+      "name_ja": "外食業",
+      "name_id": "Restoran & jasa boga"
+    },
+    {
+      "id": "forestry",
+      "name_ja": "林業",
+      "name_id": "Kehutanan"
+    },
+    {
+      "id": "wood-products",
+      "name_ja": "木材産業",
+      "name_id": "Industri kayu"
+    },
+    {
+      "id": "resource-circulation",
+      "name_ja": "資源循環",
+      "name_id": "Daur ulang & sirkulasi sumber daya"
+    }
+  ],
+  "languages": [
+    {
+      "name": "Vietnamese",
+      "count": 8398
+    },
+    {
+      "name": "English",
+      "count": 7035
+    },
+    {
+      "name": "Indonesian",
+      "count": 5448
+    },
+    {
+      "name": "Chinese",
+      "count": 5272
+    },
+    {
+      "name": "Myanmar",
+      "count": 3768
+    },
+    {
+      "name": "Nepali",
+      "count": 2700
+    },
+    {
+      "name": "Tagalog",
+      "count": 2229
+    },
+    {
+      "name": "Khmer",
+      "count": 1451
+    },
+    {
+      "name": "Thai",
+      "count": 1324
+    },
+    {
+      "name": "Sinhala",
+      "count": 938
+    },
+    {
+      "name": "Mongolian",
+      "count": 802
+    },
+    {
+      "name": "Korean",
+      "count": 581
+    },
+    {
+      "name": "Bengali",
+      "count": 547
+    },
+    {
+      "name": "Hindi",
+      "count": 510
+    },
+    {
+      "name": "Portuguese",
+      "count": 233
+    },
+    {
+      "name": "Spanish",
+      "count": 222
+    },
+    {
+      "name": "Lao",
+      "count": 169
+    },
+    {
+      "name": "Uzbek",
+      "count": 128
+    },
+    {
+      "name": "Russian",
+      "count": 116
+    },
+    {
+      "name": "Tamil",
+      "count": 112
+    },
+    {
+      "name": "Urdu",
+      "count": 93
+    },
+    {
+      "name": "Malay",
+      "count": 72
+    },
+    {
+      "name": "French",
+      "count": 65
+    },
+    {
+      "name": "Taiwanese",
+      "count": 57
+    },
+    {
+      "name": "Bisaya",
+      "count": 48
+    },
+    {
+      "name": "Italian",
+      "count": 34
+    },
+    {
+      "name": "Kyrgyz",
+      "count": 29
+    },
+    {
+      "name": "Cantonese",
+      "count": 18
+    },
+    {
+      "name": "German",
+      "count": 18
+    },
+    {
+      "name": "Turkish",
+      "count": 17
+    },
+    {
+      "name": "Arabic",
+      "count": 13
+    },
+    {
+      "name": "Dzongkha",
+      "count": 9
+    },
+    {
+      "name": "Japanese",
+      "count": 7
+    },
+    {
+      "name": "Korean.Mongolian",
+      "count": 7
+    },
+    {
+      "name": "Ukrainian",
+      "count": 7
+    },
+    {
+      "name": "Kazakh",
+      "count": 5
+    },
+    {
+      "name": "Punjabi",
+      "count": 5
+    },
+    {
+      "name": "Croatian",
+      "count": 4
+    },
+    {
+      "name": "Hiligaynon",
+      "count": 4
+    },
+    {
+      "name": "Shanghainese",
+      "count": 4
+    },
+    {
+      "name": "Cebuano",
+      "count": 3
+    },
+    {
+      "name": "Gilbertese",
+      "count": 3
+    },
+    {
+      "name": "Persian",
+      "count": 3
+    },
+    {
+      "name": "Sindhi",
+      "count": 3
+    },
+    {
+      "name": "Slovak",
+      "count": 3
+    },
+    {
+      "name": "Solomon",
+      "count": 3
+    },
+    {
+      "name": "Tajik",
+      "count": 3
+    },
+    {
+      "name": "Azerbaijani",
+      "count": 2
+    },
+    {
+      "name": "Czech",
+      "count": 2
+    },
+    {
+      "name": "Kapampangan",
+      "count": 2
+    },
+    {
+      "name": "Karen",
+      "count": 2
+    },
+    {
+      "name": "Malagasy",
+      "count": 2
+    },
+    {
+      "name": "Malayalam",
+      "count": 2
+    },
+    {
+      "name": "Norwegian",
+      "count": 2
+    },
+    {
+      "name": "Telugu",
+      "count": 2
+    },
+    {
+      "name": "Arakanese",
+      "count": 1
+    },
+    {
+      "name": "Armenian",
+      "count": 1
+    },
+    {
+      "name": "Chinesmyanmar",
+      "count": 1
+    },
+    {
+      "name": "Chuukese",
+      "count": 1
+    },
+    {
+      "name": "Dari",
+      "count": 1
+    },
+    {
+      "name": "Gujarati",
+      "count": 1
+    },
+    {
+      "name": "Hausa",
+      "count": 1
+    },
+    {
+      "name": "Ilocano",
+      "count": 1
+    },
+    {
+      "name": "Kachin",
+      "count": 1
+    },
+    {
+      "name": "Kanzabi",
+      "count": 1
+    },
+    {
+      "name": "Marathi",
+      "count": 1
+    },
+    {
+      "name": "Marwari",
+      "count": 1
+    },
+    {
+      "name": "Pashto",
+      "count": 1
+    },
+    {
+      "name": "Romanian",
+      "count": 1
+    },
+    {
+      "name": "Senegal",
+      "count": 1
+    },
+    {
+      "name": "Sichuanese",
+      "count": 1
+    },
+    {
+      "name": "Swahili",
+      "count": 1
+    },
+    {
+      "name": "Turkmen",
+      "count": 1
+    }
+  ]
+}

@@ -55,7 +55,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({ isOpen, onClose }) => {
                         </div>
                         <div>
                             <span className="font-bold text-slate-800 block mb-1">Data Masih Berkembang</span>
-                            Data spesialisasi (Tags) didapatkan dari analisis AI yang berjalan setiap hari. Masih banyak perusahaan yang belum memiliki tags (data belum lengkap). Tren nasional mungkin berubah seiring bertambahnya data yang teranalisa.
+                            Data spesialisasi (Tags) berasal dari riset bertahap per organisasi, bukan dari seluruh populasi TSK. Masih banyak perusahaan yang belum diriset (data belum lengkap). Tren nasional akan berubah seiring bertambahnya organisasi yang diriset.
                         </div>
                     </div>
                 </div>
