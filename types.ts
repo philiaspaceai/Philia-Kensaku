@@ -48,6 +48,8 @@ export interface SearchFilters {
   prefectures: string[];
   languages: string[];
   excludedLanguages: string[];
+  /** id bidang SSW (lihat SSW_FIELDS_META). Kosong = semua bidang. */
+  sswFields: string[];
   dateSort: 'newest' | 'oldest' | null;
   supportLegal: boolean;
   supportOptional: boolean;

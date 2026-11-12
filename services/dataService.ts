@@ -79,6 +79,11 @@ export function filterRecords(records: TSKRecord[], filters: SearchFilters): TSK
       if (blocked) return false;
     }
 
+    if (filters.sswFields.length > 0) {
+      const hasField = r.ssw_fields.some((f) => filters.sswFields.includes(f.id));
+      if (!hasField) return false;
+    }
+
     if (filters.supportLegal && r.support_legal !== true) return false;
     if (filters.supportOptional && r.support_optional !== true) return false;
 
@@ -115,6 +120,20 @@ export function paginate(records: TSKRecord[], page: number) {
 /** Kunci stabil per baris: cabang berbagi nomor registrasi dengan pusat. */
 export function recordKey(r: TSKRecord): string {
   return `${r.reg_number}-${r.office_seq}`;
+}
+
+/**
+ * Jumlah kantor per bidang SSW — dipakai sebagai angka pendamping di filter,
+ * supaya pengguna tahu berapa hasil yang wajar sebelum memilih.
+ */
+export function countByField(records: TSKRecord[]): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const r of records) {
+    for (const f of r.ssw_fields) {
+      out[f.id] = (out[f.id] ?? 0) + 1;
+    }
+  }
+  return out;
 }
 
 // --- Statistik -------------------------------------------------------------

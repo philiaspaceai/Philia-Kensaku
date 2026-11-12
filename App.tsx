@@ -7,6 +7,7 @@ import {
   sortRecords,
   paginate,
   recordKey,
+  countByField,
 } from './services/dataService';
 import { TSKRecord, SearchFilters, SearchMode, Manifest } from './types';
 import { TSKCard } from './components/TSKCard';
@@ -17,6 +18,7 @@ import { Information } from './components/Information';
 import { TSKAnalytics } from './components/TSKAnalytics';
 import { LocationModal } from './components/modals/LocationModal';
 import { LanguageModal } from './components/modals/LanguageModal';
+import { SSWFieldModal } from './components/modals/SSWFieldModal';
 import { SelectMenu } from './components/modals/SelectMenu';
 
 const EMPTY_FILTERS: SearchFilters = {
@@ -24,6 +26,7 @@ const EMPTY_FILTERS: SearchFilters = {
   prefectures: [],
   languages: [],
   excludedLanguages: [],
+  sswFields: [],
   dateSort: null,
   supportLegal: true,
   supportOptional: false,
@@ -35,6 +38,7 @@ function App() {
   // Modal states
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
+  const [isSSWFieldModalOpen, setIsSSWFieldModalOpen] = useState(false);
   const [isSelectMenuOpen, setIsSelectMenuOpen] = useState(false);
 
   // Dataset (dimuat sekali di awal)
@@ -96,6 +100,13 @@ function App() {
     setFilters({ ...filters, languages: included, excludedLanguages: excluded });
   };
 
+  const handleSSWFieldSave = (fields: string[]) => {
+    setFilters({ ...filters, sswFields: fields });
+  };
+
+  // Jumlah kantor per bidang — dihitung sekali per dataset, bukan tiap render.
+  const fieldCounts = useMemo(() => countByField(records), [records]);
+
   const handleSelectMenuOption = (option: 'analytics' | 'info' | 'donate') => {
     setIsSelectMenuOpen(false);
     if (option === 'donate') {
@@ -153,6 +164,7 @@ Sertakan [LINK SUMBER] untuk setiap fakta yang Anda temukan.`;
     filters.prefectures.length +
     filters.languages.length +
     filters.excludedLanguages.length +
+    filters.sswFields.length +
     (filters.supportOptional ? 1 : 0) +
     (filters.dateSort ? 1 : 0);
 
@@ -298,6 +310,7 @@ Sertakan [LINK SUMBER] untuk setiap fakta yang Anda temukan.`;
                     onChange={setFilters}
                     onLocationOpen={() => setIsLocationModalOpen(true)}
                     onLanguageOpen={() => setIsLanguageModalOpen(true)}
+                    onSSWFieldOpen={() => setIsSSWFieldModalOpen(true)}
                   />
 
                   <div className="pt-2 flex justify-end">
@@ -442,6 +455,15 @@ Sertakan [LINK SUMBER] untuk setiap fakta yang Anda temukan.`;
         excludedLanguages={filters.excludedLanguages}
         onSave={handleLanguageSave}
         languages={manifest?.languages ?? []}
+      />
+
+      <SSWFieldModal
+        isOpen={isSSWFieldModalOpen}
+        onClose={() => setIsSSWFieldModalOpen(false)}
+        selected={filters.sswFields}
+        onSave={handleSSWFieldSave}
+        counts={fieldCounts}
+        labeledOrganizations={manifest?.labeled_organizations ?? 0}
       />
 
       <SelectMenu

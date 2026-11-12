@@ -1,20 +1,23 @@
 
 import React from 'react';
 import { SearchFilters } from '../types';
-import { Check, Shield, ShieldCheck, MapPin, Languages, Lock, Calendar, History } from 'lucide-react';
+import { Check, Shield, ShieldCheck, MapPin, Languages, Lock, Calendar, History, Briefcase } from 'lucide-react';
+import { getFieldMeta } from '../constants';
 
 interface AdvancedFilterProps {
   filters: SearchFilters;
   onChange: (filters: SearchFilters) => void;
   onLocationOpen: () => void;
   onLanguageOpen: () => void;
+  onSSWFieldOpen: () => void;
 }
 
 export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ 
   filters, 
   onChange, 
   onLocationOpen, 
-  onLanguageOpen 
+  onLanguageOpen,
+  onSSWFieldOpen,
 }) => {
   // Legal is locked true, no toggle function provided to UI
   const toggleOptional = () => onChange({ ...filters, supportOptional: !filters.supportOptional });
@@ -129,7 +132,52 @@ export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({
         </div>
       </section>
 
-      {/* 2. Filter Urutan Tanggal */}
+      {/* 2. Bidang SSW */}
+      <section>
+        <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Bidang Pekerjaan (SSW)</h4>
+
+        <button
+          onClick={onSSWFieldOpen}
+          className={`
+              w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300
+              ${filters.sswFields.length > 0
+                  ? 'border-emerald-500 bg-emerald-50 text-emerald-800 shadow-sm'
+                  : 'border-slate-200 bg-white hover:border-emerald-300 hover:bg-slate-50 text-slate-500'
+              }
+          `}
+        >
+          <div className="flex items-center gap-3 overflow-hidden">
+            <div className={`p-2.5 rounded-lg shrink-0 ${filters.sswFields.length > 0 ? 'bg-emerald-200 text-emerald-700' : 'bg-slate-100 text-slate-400'}`}>
+              <Briefcase className="w-6 h-6" />
+            </div>
+            <div className="text-left min-w-0">
+              <span className="block font-bold text-base truncate">
+                {filters.sswFields.length === 0 ? 'Pilih Bidang' : `${filters.sswFields.length} Bidang`}
+              </span>
+              <span className="text-xs opacity-70 truncate block">
+                {filters.sswFields.length === 0
+                  ? 'Semua bidang'
+                  : filters.sswFields
+                      .slice(0, 2)
+                      .map((id) => getFieldMeta(id)?.label ?? id)
+                      .join(', ') + (filters.sswFields.length > 2 ? ', ...' : '')}
+              </span>
+            </div>
+          </div>
+
+          <div className="ml-2 shrink-0">
+            {filters.sswFields.length > 0 ? (
+              <div className="bg-emerald-600 text-white p-1 rounded-full">
+                <Check className="w-3 h-3" />
+              </div>
+            ) : (
+              <span className="text-slate-300 text-2xl font-light leading-none">+</span>
+            )}
+          </div>
+        </button>
+      </section>
+
+      {/* 3. Filter Urutan Tanggal */}
       <section>
         <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Urutkan Tanggal Mulai Operasi</h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
